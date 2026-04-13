@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* custom global styles mo dito */
+html, body, #root {
+  font-family: 'MyFont', sans-serif; /* gagamitin na niya yung font na dinefine sa index.html */
+  background: #f1f1f1;
+  color: #1e2432;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+:root {
+  --bg-primary: #f9fafb;
+  --text-primary: #1f2937;
+}
+
+.dark {
+  --bg-primary: #111827;
+  --text-primary: #f9fafb;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Dark Mode Variables */
+:root {
+  --bg-primary:    #f9fafb;
+  --bg-secondary:  #ffffff;
+  --text-primary:  #1f2937;
+  --text-secondary:#6b7280;
+  --border-color:  #f3f4f6;
+}
+
+.dark {
+  --bg-primary:    #111827;
+  --bg-secondary:  #1f2937;
+  --text-primary:  #f9fafb;
+  --text-secondary:#9ca3af;
+  --border-color:  #374151;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Cards and white backgrounds */
+.bg-white {
+  background-color: var(--bg-secondary) !important;
+}
+
+.bg-gray-50 {
+  background-color: var(--bg-primary) !important;
+}
+
+.text-gray-800,
+.text-gray-700,
+.text-gray-600 {
+  color: var(--text-primary) !important;
+}
+
+.text-gray-500,
+.text-gray-400 {
+  color: var(--text-secondary) !important;
+}
+
+.border-gray-100,
+.border-gray-200 {
+  border-color: var(--border-color) !important;
+}

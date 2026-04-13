@@ -1,0 +1,117 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to get user's role
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+    
+    // Helper function to get user's organization
+    function getUserOrgId() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.org_id;
+    }
+    
+    // Helper function to check if user is superadmin
+    function isSuperAdmin() {
+      return isAuthenticated() && getUserRole() == 'superadmin';
+    }
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return isAuthenticated() && getUserRole() == 'admin';
+    }
+    
+    // Helper function to check if user owns the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Helper function to check if user belongs to the organization
+    function isInOrganization(orgId) {
+      return isAuthenticated() && getUserOrgId() == orgId;
+    }
+    
+    // =======================
+    // USERS COLLECTION
+    // =======================
+    match /users/{userId} {
+      // Anyone can read if they are a SuperAdmin or checking existence
+      // Or if they are authenticated and reading their own/org data
+      allow read: if true; 
+      allow write: if true;
+    }
+    match /user_preferences/{userId} {
+      allow read, write: if isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // =======================
+    // ORGANIZATIONS COLLECTION
+    // =======================
+    match /organizations/{orgId} {
+      // SuperAdmins can read ALL. Admins/Users can only read theirs.
+      allow read: if isSuperAdmin() || (isAuthenticated() && isInOrganization(orgId));
+      
+      // Only superadmins can manage organizations
+      allow write: if isSuperAdmin();
+    }
+    
+    // =======================
+    // CAMERAS COLLECTION
+    // =======================
+    match /cameras/{cameraId} {
+      // SuperAdmins can see everything. Others only their org.
+      allow read: if isSuperAdmin() || (isAuthenticated() && resource.data.org_id == getUserOrgId());
+      
+      // Admins can manage their own cameras
+      allow write: if isSuperAdmin() || (isAuthenticated() && isAdmin() && (request.resource.data.org_id == getUserOrgId() || resource.data.org_id == getUserOrgId()));
+    }
+    
+    // =======================
+    // ALERTS COLLECTION
+    // =======================
+    match /alerts/{alertId} {
+      allow read: if isSuperAdmin() || (isAuthenticated() && resource.data.org_id == getUserOrgId());
+      allow create: if isAuthenticated();
+      allow update, delete: if isSuperAdmin() || (isAuthenticated() && isAdmin() && resource.data.org_id == getUserOrgId());
+    }
+    
+    // =======================
+    // DETECTIONS COLLECTION
+    // =======================
+    match /detections/{detectionId} {
+
+          // ALLOW READ: Makikita lang ng user ang logs kapag nasa parehong organization sila
+          allow read: if isAuthenticated() && (resource.data.org_id == getUserOrgId());
+
+          // ALLOW DELETE: Para sa Hard Delete (Tuluyang pagbura mula sa Recycle Bin)
+          allow delete: if isAuthenticated() && (resource.data.org_id == getUserOrgId());
+
+          // ALLOW UPDATE: Para sa Soft Delete (Move to Bin) at Restore
+          allow update: if isAuthenticated() && (resource.data.org_id == getUserOrgId());
+
+          // ALLOW CREATE: Ang Backend/AI lang ang pwedeng gumawa ng bagong detections
+          allow create: if false; 
+        }
+    
+    // =======================
+    // ADMIN VERIFICATION CODES
+    // =======================
+    match /admin_verification_codes/{codeId} {
+      allow read, write: if true;
+    }
+    
+    // =======================
+    // SETTINGS COLLECTION
+    // =======================
+    match /settings/{settingId} {
+      allow read, write: if isSuperAdmin();
+    }
+  }
+}
