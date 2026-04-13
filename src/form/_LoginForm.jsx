@@ -66,17 +66,18 @@ const _LoginForm = () => {
   };
 
   return (
-      <div className='bg-white px-10 py-20 rounded-3xl border-2 border-gray shadow-lg '>
+      <div className='bg-white dark:bg-gray-800 px-10 py-20 rounded-3xl border-2 border-gray-200 dark:border-gray-700 shadow-lg transition-colors duration-300'>
 
-        <h1 className='text-3xl font-semibold mb-4'>Anomaly Detection System</h1>
+        <h1 className='text-3xl font-semibold mb-4 text-gray-900 dark:text-white'>Anomaly Detection System</h1>
 
         <form onSubmit={handleLogin} className='mt-8'>
             <div>
-             <label className='text-lg font-medium'>Email</label>
+             <label htmlFor="email" className='text-lg font-medium text-gray-700 dark:text-gray-200'>Email</label>
              <input
+               id="email"
                required
                type="email"
-               className='w-full border-2 border-gray-100 rounded-xl p-2 mt-1 bg-transparent'
+               className='w-full border-2 border-gray-100 dark:border-gray-700 rounded-xl p-2 mt-1 bg-transparent text-gray-900 dark:text-white'
                onChange={(e)=>{setEmail(e.target.value)}} 
                value={email} 
                placeholder='Enter your email'  
@@ -84,12 +85,13 @@ const _LoginForm = () => {
            </div>
 
            <div className="mt-4">
-             <label className='text-lg font-medium'>Password</label>
+             <label htmlFor="password" className='text-lg font-medium text-gray-700 dark:text-gray-200'>Password</label>
              <div className="relative">
                  <input
+                   id="password"
                    required
                    type={showPassword ? "text" : "password"} 
-                   className='w-full border-2 border-gray-100 rounded-xl p-2 mt-1 bg-transparent pr-10'
+                   className='w-full border-2 border-gray-100 dark:border-gray-700 rounded-xl p-2 mt-1 bg-transparent pr-10 text-gray-900 dark:text-white'
                    onChange={(e) => { setPassword(e.target.value) }} 
                    value={password} 
                    placeholder='Enter your password'  
