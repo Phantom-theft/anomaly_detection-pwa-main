@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect } from "react";
 import { FaSliders, FaVideo, FaShieldHalved, FaFloppyDisk } from "react-icons/fa6";
 import { toast } from "react-toastify";

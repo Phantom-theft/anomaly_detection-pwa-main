@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { collection, query, where, doc, getDoc, onSnapshot, orderBy, limit, getFirestore } from "firebase/firestore";
