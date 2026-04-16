@@ -57,6 +57,7 @@ const _DetectionSettings = () => {
   const [original, setOriginal]   = useState(defaultSettings);
   const [loading, setLoading]     = useState(true);
   const [saving, setSaving]       = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
   const SERVER_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
   const ngrokHeader = { headers: { "ngrok-skip-browser-warning": "69420" } };
 
