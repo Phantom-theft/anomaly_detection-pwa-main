@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { app } from "../firebase/config";
 import useAuth from "../hooks/useAuth";
 
-const SERVER_URL = "http://localhost:5000";
+const SERVER_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 const db = getFirestore(app);
 
 const _Camera = () => {
@@ -23,7 +23,9 @@ const _Camera = () => {
   const fetchCameras = async () => {
     if (!orgId) return;
     try {
-      const res = await axios.get(`${SERVER_URL}/cameras?org_id=${orgId}`);
+      const res = await axios.get(`${SERVER_URL}/cameras?org_id=${orgId}`, {
+        headers: { "ngrok-skip-browser-warning": "69420" }
+      });
       if (res.data && res.data.cameras) {
         setAddedCameras(res.data.cameras);
       }
@@ -56,15 +58,20 @@ const _Camera = () => {
         cameraName, 
         rtspUrl,
         org_id: orgId || "default"
-      }, { headers: { Authorization: `Bearer ${token}` } });
+      }, { 
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "69420"
+        } 
+      });
       toast.success(`Camera '${cameraName}' added successfully!`);
       setCameraName(""); setRtspUrl("");
       fetchCameras();
     } catch (error) {
-      console.error(error);
+      console.error("Add Camera Error:", error);
       if (error.response?.status === 400) { toast.warn(error.response.data?.error || "Invalid request"); }
-      else if (!error.response) { toast.error("Backend is offline."); }
-      else { toast.error("Server error. Please try again."); }
+      else if (!error.response) { toast.error(`Backend is offline or unreachable: ${error.message}`); }
+      else { toast.error(`Server error: ${error.message}`); }
     } finally { setLoading(false); }
   };
 
@@ -88,26 +95,34 @@ const _Camera = () => {
         cameraName, 
         youtubeUrl,
         org_id: orgId || "default"
-      }, { headers: { Authorization: `Bearer ${token}` } });
+      }, { 
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "69420"
+        } 
+      });
       toast.success(`YouTube stream '${cameraName}' added successfully!`);
       setCameraName(""); setYoutubeUrl("");
       fetchCameras();
     } catch (error) {
-      console.error(error);
+      console.error("Add YouTube Error:", error);
       if (error.response?.status === 400) { toast.warn(error.response.data?.error || "Invalid request"); }
       else if (error.response?.status === 500) { toast.error(error.response.data?.error || "Server error fetching YouTube stream."); }
-      else if (!error.response) { toast.error("Backend is offline."); }
-      else { toast.error("Server error. Please try again."); }
+      else if (!error.response) { toast.error(`Backend is offline or unreachable: ${error.message}`); }
+      else { toast.error(`Server error: ${error.message}`); }
     } finally { setLoading(false); }
   };
 
   const handleRemove = async (name) => {
     if (!window.confirm(`Are you sure you want to delete camera '${name}'?`)) return;
     try {
-        await axios.delete(`${SERVER_URL}/delete_camera/${name}`);
+        await axios.delete(`${SERVER_URL}/delete_camera/${name}`, {
+          headers: { "ngrok-skip-browser-warning": "69420" }
+        });
         toast.success("Camera removed");
         fetchCameras();
     } catch (err) {
+        console.error("Delete Camera Error:", err);
         toast.error("Failed to delete camera.");
     }
   };
