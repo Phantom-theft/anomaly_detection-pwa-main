@@ -33,7 +33,7 @@ export const createSSEConnection = (events = DEFAULT_EVENTS, onMessage, onError,
   const eventsParam = events.join(',');
 
   const cleanBaseUrl = BASE_URL.replace(/\/+$/, "");
-  let url = `${cleanBaseUrl}/stream?events=${encodeURIComponent(eventsParam)}&client_id=${encodeURIComponent(finalClientId)}`;
+  let url = `${cleanBaseUrl}/stream?events=${encodeURIComponent(eventsParam)}&client_id=${encodeURIComponent(finalClientId)}&ngrok-skip-browser-warning=true`;
   
   if (orgId) {
     url += `&org_id=${encodeURIComponent(orgId)}`;
