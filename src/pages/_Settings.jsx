@@ -424,7 +424,10 @@ export default function Settings() {
         const endpoint = type === "restore_raw" ? "/restore_raw_record" : "/permanent_delete_raw_record";
         const res = await fetch(`${SERVER_URL}${endpoint}`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "69420"
+          },
           body: JSON.stringify({
             camera: binReplayCamera,
             date: binReplayDate,

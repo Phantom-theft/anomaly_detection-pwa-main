@@ -8,7 +8,8 @@ const SystemSettings = () => {
   const [fetching, setFetching] = useState(true);
   
   // URL ng Flask AI Server mo
-  const AI_API_URL = "http://localhost:5000/detection_settings"; 
+  const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+  const AI_API_URL = `${BASE_URL}/detection_settings`; 
 
   // Default state na naka-map sa Python variables mo
   const [settings, setSettings] = useState({
@@ -23,21 +24,26 @@ const SystemSettings = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await fetch(AI_API_URL);
+        const response = await fetch(AI_API_URL, {
+          headers: { "ngrok-skip-browser-warning": "69420" }
+        });
         if (response.ok) {
           const data = await response.json();
           setSettings((prev) => ({ ...prev, ...data }));
+        } else {
+          const errData = await response.json();
+          throw new Error(errData.message || `Server error: ${response.status}`);
         }
       } catch (error) {
         console.error("Failed to fetch AI settings:", error);
-        toast.error("Cannot connect to AI Server. Is it running?");
+        toast.error(`Cannot connect to AI Server: ${error.message}`);
       } finally {
         setFetching(false);
       }
     };
 
     fetchSettings();
-  }, []);
+  }, [AI_API_URL]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,6 +54,29 @@ const SystemSettings = () => {
     e.preventDefault();
     setLoading(true);
     
+    try {
+      const response = await fetch(AI_API_URL, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "69420"
+        },
+        body: JSON.stringify(settings),
+      });
+
+      if (response.ok) {
+        toast.success("AI Settings updated successfully!");
+      } else {
+        const data = await response.json();
+        toast.error(data.message || "Failed to update settings.");
+      }
+    } catch (error) {
+      console.error("Save settings error:", error);
+      toast.error(`Error saving settings: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
     try {
       // Ipapasa ang bagong settings sa Python Flask API
       const response = await fetch(AI_API_URL, {

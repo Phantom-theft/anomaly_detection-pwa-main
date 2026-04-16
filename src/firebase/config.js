@@ -269,9 +269,13 @@ const updateUserEntry = async (userId, newData) => {
 
 const deleteUserEntry = async (userId) => {
   try {
+    const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
     // 1. I-delete sa Firebase Auth via backend
     try {
-      await fetch(`http://localhost:5000/delete_user/${userId}`, { method: "DELETE" });
+      await fetch(`${BASE_URL}/delete_user/${userId}`, { 
+        method: "DELETE",
+        headers: { "ngrok-skip-browser-warning": "69420" }
+      });
     } catch (authErr) {
       console.warn("Auth deletion failed (may already be deleted):", authErr);
     }

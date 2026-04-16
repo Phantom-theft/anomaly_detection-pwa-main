@@ -57,43 +57,46 @@ const _DetectionSettings = () => {
   const [original, setOriginal]   = useState(defaultSettings);
   const [loading, setLoading]     = useState(true);
   const [saving, setSaving]       = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
+  const SERVER_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+  const ngrokHeader = { headers: { "ngrok-skip-browser-warning": "69420" } };
 
-  useEffect(() => {
-    const fetchSettings = async () => {
+  // ... inside the component ...
+    useEffect(() => {
+      const fetchSettings = async () => {
+        try {
+          const res = await axios.get(`${SERVER_URL}/detection_settings`, ngrokHeader);
+          setSettings(res.data);
+          setOriginal(res.data);
+        } catch (err) {
+          console.error("Detection Settings Fetch Error:", err);
+          toast.error(`Backend is offline or unreachable: ${err.message}`);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchSettings();
+    }, []);
+
+    const handleChange = (key, value) => {
+      const updated = { ...settings, [key]: parseFloat(value) };
+      setSettings(updated);
+      setHasChanges(JSON.stringify(updated) !== JSON.stringify(original));
+    };
+
+    const handleSave = async () => {
+      setSaving(true);
       try {
-        const res = await axios.get(`${SERVER_URL}/detection_settings`);
-        setSettings(res.data);
-        setOriginal(res.data);
+        await axios.post(`${SERVER_URL}/detection_settings`, settings, ngrokHeader);
+        toast.success("Settings saved successfully! Changes applied to AI instantly.");
+        setOriginal(settings);
+        setHasChanges(false);
       } catch (err) {
-        toast.error("Backend is offline. Showing default values.");
+        console.error("Detection Settings Save Error:", err);
+        toast.error(`Failed to save settings: ${err.message}`);
       } finally {
-        setLoading(false);
+        setSaving(false);
       }
     };
-    fetchSettings();
-  }, []);
-
-  const handleChange = (key, value) => {
-    const updated = { ...settings, [key]: parseFloat(value) };
-    setSettings(updated);
-    setHasChanges(JSON.stringify(updated) !== JSON.stringify(original));
-  };
-
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      await axios.post(`${SERVER_URL}/detection_settings`, settings);
-      toast.success("Settings saved successfully! Changes applied to AI instantly.");
-      setOriginal(settings);
-      setHasChanges(false);
-    } catch (err) {
-      toast.error("Failed to save settings. Backend may be offline.");
-    } finally {
-      setSaving(false);
-    }
-  };
-
   const handleReset = () => {
     setSettings(original);
     setHasChanges(false);

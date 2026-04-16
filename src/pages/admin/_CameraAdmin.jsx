@@ -5,7 +5,7 @@ import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { FaVideo, FaCamera, FaYoutube, FaCircle } from "react-icons/fa6";
 import { app } from "../../firebase/config";
 
-const SERVER_URL = "http://localhost:5000";
+const SERVER_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 const db = getFirestore(app);
 
 const _CameraAdmin = () => {
@@ -39,10 +39,12 @@ const _CameraAdmin = () => {
       try {
         // Strict filtering by org_id
         const url = `${SERVER_URL}/cameras?org_id=${orgId}`;
-        const res = await axios.get(url);
+        const res = await axios.get(url, {
+          headers: { "ngrok-skip-browser-warning": "69420" }
+        });
         setCameraList(res.data.cameras || []);
       } catch (err) {
-        console.error("Error fetching cameras:", err);
+        console.error("Camera Admin Fetch Error:", err);
       } finally {
         setLoading(false);
       }

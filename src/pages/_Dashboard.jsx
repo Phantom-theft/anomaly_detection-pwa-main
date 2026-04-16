@@ -120,7 +120,9 @@ const RecordingsArchive = ({ serverUrl, orgId, darkMode }) => {
     if (!orgId) return;
     const fetchRecordedCameras = async () => {
       try {
-        const res = await fetch(`${serverUrl}/get_recorded_cameras?org_id=${orgId}`);
+        const res = await fetch(`${serverUrl}/get_recorded_cameras?org_id=${orgId}`, {
+          headers: { "ngrok-skip-browser-warning": "69420" }
+        });
         if (res.ok) {
           const data = await res.json();
           setRecordedCameras(data.cameras || []);
@@ -140,7 +142,9 @@ const RecordingsArchive = ({ serverUrl, orgId, darkMode }) => {
     setLoadingReplay(true);
     setSelectedVideo(null);
     try {
-      const res = await fetch(`${serverUrl}/get_recordings?camera=${replayCamera}&date=${replayDate}&org_id=${orgId}`);
+      const res = await fetch(`${serverUrl}/get_recordings?camera=${replayCamera}&date=${replayDate}&org_id=${orgId}`, {
+        headers: { "ngrok-skip-browser-warning": "69420" }
+      });
       if (res.ok) {
         const data = await res.json();
         setRecordings(data.files || []);
@@ -170,7 +174,10 @@ const RecordingsArchive = ({ serverUrl, orgId, darkMode }) => {
     try {
       const res = await fetch(`${serverUrl}/delete_raw_record`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "69420"
+        },
         body: JSON.stringify({
           camera: replayCamera,
           date: replayDate,
@@ -387,7 +394,9 @@ export default function Dashboard() {
     if (!actualOrgId) return;
     const fetch_ = async () => {
       try {
-        const res = await fetch(`${SERVER_URL}/cameras?org_id=${actualOrgId}`);
+        const res = await fetch(`${SERVER_URL}/cameras?org_id=${actualOrgId}`, {
+          headers: { "ngrok-skip-browser-warning": "69420" }
+        });
         const data = await res.json();
         if (data.cameras?.length > 0)
           setCameraNames(data.cameras.map(c => typeof c === "object" ? c.name : c));
