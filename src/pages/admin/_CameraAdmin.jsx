@@ -5,7 +5,12 @@ import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { FaVideo, FaCamera, FaYoutube, FaCircle } from "react-icons/fa6";
 import { app } from "../../firebase/config";
 
-const SERVER_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+const rawApiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+let cleanUrl = rawApiUrl.replace(/\/+$/, "");
+if (cleanUrl.includes("ngrok-free.dev")) cleanUrl = cleanUrl.replace(":5000", "");
+if (window.location.protocol === "https:" && cleanUrl.includes("ngrok-free.dev")) cleanUrl = cleanUrl.replace("http://", "https://");
+
+const SERVER_URL = cleanUrl;
 const db = getFirestore(app);
 
 const _CameraAdmin = () => {

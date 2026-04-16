@@ -4,8 +4,6 @@ import { toast } from "react-toastify";
 import { IoSettingsSharp } from "react-icons/io5";
 import { FaSave, FaUndo } from "react-icons/fa";
 
-const SERVER_URL = "http://localhost:5000";
-
 const defaultSettings = {
   video_fps:               30,
   loiter_area_w:           0.35,
@@ -58,7 +56,13 @@ const _DetectionSettings = () => {
   const [loading, setLoading]     = useState(true);
   const [saving, setSaving]       = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
-  const SERVER_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+  
+  const rawApiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+  let cleanUrl = rawApiUrl.replace(/\/+$/, "");
+  if (cleanUrl.includes("ngrok-free.dev")) cleanUrl = cleanUrl.replace(":5000", "");
+  if (window.location.protocol === "https:" && cleanUrl.includes("ngrok-free.dev")) cleanUrl = cleanUrl.replace("http://", "https://");
+  
+  const SERVER_URL = cleanUrl;
   const ngrokHeader = { headers: { "ngrok-skip-browser-warning": "69420" } };
 
   // ... inside the component ...

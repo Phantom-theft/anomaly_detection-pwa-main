@@ -7,7 +7,12 @@ import { db } from "../firebase/config";
 import useAuth from "../hooks/useAuth";
 import ConfirmModal from "../components/ConfirmModal";
 
-const SERVER_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+const rawApiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+let cleanUrl = rawApiUrl.replace(/\/+$/, "");
+if (cleanUrl.includes("ngrok-free.dev")) cleanUrl = cleanUrl.replace(":5000", "");
+if (window.location.protocol === "https:" && cleanUrl.includes("ngrok-free.dev")) cleanUrl = cleanUrl.replace("http://", "https://");
+
+const SERVER_URL = cleanUrl;
 
 const getConfidenceColor = (confidence) => {
   if (!confidence) return "#6b7280";

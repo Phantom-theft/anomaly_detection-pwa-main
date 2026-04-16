@@ -10,14 +10,21 @@ import { WifiOff, Loader2, Radio } from "lucide-react";
  *   serverUrl   — base URL ng Flask server (e.g. "http://192.168.1.x:5000")
  *   className   — optional Tailwind classes
  */
-const HLSPlayer = ({ cameraName, serverUrl = "http://localhost:5000", className = "" }) => {
+const HLSPlayer = ({ cameraName, serverUrl, className = "" }) => {
+  const rawApiUrl = serverUrl || process.env.REACT_APP_API_URL || "http://localhost:5000";
+  let cleanUrl = rawApiUrl.replace(/\/+$/, "");
+  if (cleanUrl.includes("ngrok-free.dev")) cleanUrl = cleanUrl.replace(":5000", "");
+  if (typeof window !== 'undefined' && window.location.protocol === "https:" && cleanUrl.includes("ngrok-free.dev")) {
+    cleanUrl = cleanUrl.replace("http://", "https://");
+  }
+  const finalServerUrl = cleanUrl;
   const videoRef  = useRef(null);
   const hlsRef    = useRef(null);
 
   const [status, setStatus]   = useState("connecting");
   // connecting | playing | error | retrying
 
-  const hlsUrl = `${serverUrl}/hls/${cameraName}/stream.m3u8`;
+  const hlsUrl = `${finalServerUrl}/hls/${cameraName}/stream.m3u8`;
 
   useEffect(() => {
     if (!cameraName) return;

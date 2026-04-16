@@ -11,8 +11,12 @@ import { Trash2, Info } from "lucide-react"; // 🚨 DAGDAG: Info Icon
 import { toast } from "react-toastify";
 import ConfirmModal from "../components/ConfirmModal"; // 🚨 DAGDAG: ConfirmModal import
 
-const rawUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
-const SERVER_URL = rawUrl.replace(/\/+$/, "");
+const rawApiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+let cleanUrl = rawApiUrl.replace(/\/+$/, "");
+if (cleanUrl.includes("ngrok-free.dev")) cleanUrl = cleanUrl.replace(":5000", "");
+if (window.location.protocol === "https:" && cleanUrl.includes("ngrok-free.dev")) cleanUrl = cleanUrl.replace("http://", "https://");
+
+const SERVER_URL = cleanUrl;
 const db = getFirestore(app);
 
 // ============================================================

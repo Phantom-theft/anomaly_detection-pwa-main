@@ -3,7 +3,13 @@ import { getAuth, currentUser } from 'firebase/auth';
 import { app } from '../firebase/config';
 
 // Get base URL from environment variable
-const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const rawApiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+let cleanUrl = rawApiUrl.replace(/\/+$/, "");
+if (cleanUrl.includes("ngrok-free.dev")) cleanUrl = cleanUrl.replace(":5000", "");
+if (typeof window !== 'undefined' && window.location.protocol === "https:" && cleanUrl.includes("ngrok-free.dev")) {
+  cleanUrl = cleanUrl.replace("http://", "https://");
+}
+const BASE_URL = cleanUrl;
 
 // Create axios instance
 const api = axios.create({

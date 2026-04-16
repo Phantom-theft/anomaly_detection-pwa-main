@@ -8,7 +8,12 @@ const SystemSettings = () => {
   const [fetching, setFetching] = useState(true);
   
   // URL ng Flask AI Server mo
-  const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+  const rawApiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+  let cleanUrl = rawApiUrl.replace(/\/+$/, "");
+  if (cleanUrl.includes("ngrok-free.dev")) cleanUrl = cleanUrl.replace(":5000", "");
+  if (window.location.protocol === "https:" && cleanUrl.includes("ngrok-free.dev")) cleanUrl = cleanUrl.replace("http://", "https://");
+  
+  const BASE_URL = cleanUrl;
   const AI_API_URL = `${BASE_URL}/detection_settings`; 
 
   // Default state na naka-map sa Python variables mo

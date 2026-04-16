@@ -7,7 +7,18 @@ import { toast } from "react-toastify";
 import { app } from "../firebase/config";
 import useAuth from "../hooks/useAuth";
 
-const SERVER_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+const rawApiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+// 1. Remove trailing slash
+let cleanUrl = rawApiUrl.replace(/\/+$/, "");
+// 2. Remove :5000 if it's an ngrok link (safety)
+if (cleanUrl.includes("ngrok-free.dev")) {
+  cleanUrl = cleanUrl.replace(":5000", "");
+}
+// 3. Force HTTPS if we are on an HTTPS site and using ngrok
+if (window.location.protocol === "https:" && cleanUrl.includes("ngrok-free.dev")) {
+  cleanUrl = cleanUrl.replace("http://", "https://");
+}
+const SERVER_URL = cleanUrl;
 const db = getFirestore(app);
 
 const _Camera = () => {

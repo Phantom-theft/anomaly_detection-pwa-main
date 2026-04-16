@@ -30,9 +30,13 @@ export default function ProfileSidebar({ open, setOpen, user }) {
       if (isChecking) return;
       isChecking = true;
       try {
+        const BASE_URL = (process.env.REACT_APP_API_URL || "http://localhost:5000").replace(/\/+$/, "");
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 2000);
-        const res = await fetch('http://localhost:5000/logs', { signal: controller.signal });
+        const res = await fetch(`${BASE_URL}/cameras`, { 
+          signal: controller.signal,
+          headers: { "ngrok-skip-browser-warning": "69420" }
+        });
         clearTimeout(timeoutId);
         setIsBackendOnline(res.ok);
       } catch {

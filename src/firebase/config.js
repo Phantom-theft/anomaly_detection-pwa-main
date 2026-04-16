@@ -269,7 +269,13 @@ const updateUserEntry = async (userId, newData) => {
 
 const deleteUserEntry = async (userId) => {
   try {
-    const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    const rawApiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    let cleanUrl = rawApiUrl.replace(/\/+$/, "");
+    if (cleanUrl.includes("ngrok-free.dev")) cleanUrl = cleanUrl.replace(":5000", "");
+    if (typeof window !== 'undefined' && window.location.protocol === "https:" && cleanUrl.includes("ngrok-free.dev")) {
+      cleanUrl = cleanUrl.replace("http://", "https://");
+    }
+    const BASE_URL = cleanUrl;
     // 1. I-delete sa Firebase Auth via backend
     try {
       await fetch(`${BASE_URL}/delete_user/${userId}`, { 
