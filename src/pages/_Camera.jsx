@@ -28,7 +28,7 @@ const _Camera = () => {
   const [rtspUrl, setRtspUrl]           = useState("");
   const [youtubeUrl, setYoutubeUrl]     = useState("");
   const [loading, setLoading]           = useState(false);
-  const [addedCameras, setAddedCameras] = useState([]);
+  const [addedCameras, setAddedCameras] = useState([]); 
 
   // --- Fetch cameras from Backend ---
   const fetchCameras = async () => {
@@ -47,7 +47,7 @@ const _Camera = () => {
 
   useEffect(() => {
     fetchCameras();
-    const interval = setInterval(fetchCameras, 5000); // Poll for status updates
+    const interval = setInterval(fetchCameras, 5000); // Poll for status updates.
     return () => clearInterval(interval);
   }, [orgId]);
 
