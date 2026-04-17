@@ -100,7 +100,6 @@ const _Camera = () => {
       if (!firebaseUser) throw new Error("Firebase session not found");
       
       const token = await firebaseUser.getIdToken();
-      alert("Connecting to: " + SERVER_URL);
       toast.info("Fetching YouTube stream... please wait.", { autoClose: 8000 });
       await axios.post(`${SERVER_URL}/add_youtube`, { 
         userId: firebaseUser.uid, 
@@ -295,7 +294,7 @@ const _Camera = () => {
 
                   {/* MJPEG Stream — direkta mula sa backend */}
                   <img
-                    src={`${SERVER_URL}/video/${cam.name}`}
+                    src={`${SERVER_URL}/video/${cam.name}?t=${Date.now()}`}
                     alt={`Camera ${cam.name}`}
                     className="w-full"
                     style={{ height: "220px", objectFit: "cover" }}
