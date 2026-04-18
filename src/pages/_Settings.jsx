@@ -27,7 +27,8 @@ import {
 } from "firebase/firestore";
 import {
   Moon, Sun, Shield, User, Lock, Trash2, LogOut,
-  ChevronRight, X, BookOpen, Bell, AlertTriangle, Undo, Video, CloudOff, FolderArchive
+  ChevronRight, X, BookOpen, Bell, AlertTriangle, Undo, Video, CloudOff, FolderArchive,
+  Eye, EyeOff
 } from "lucide-react";
 import { app } from "../firebase/config";
 import useAuth from "../hooks/useAuth";
@@ -50,6 +51,10 @@ const ChangePasswordModal = ({ isOpen, onClose, darkMode }) => {
   const [newPw, setNewPw]           = useState("");
   const [confirmPw, setConfirmPw]   = useState("");
   const [loading, setLoading]       = useState(false);
+
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew]         = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,16 +84,30 @@ const ChangePasswordModal = ({ isOpen, onClose, darkMode }) => {
         </div>
         <form onSubmit={handleSubmit} className="p-8 space-y-4">
           {[
-            { label: "Current Password",     val: currentPw, set: setCurrentPw },
-            { label: "New Password",          val: newPw,     set: setNewPw },
-            { label: "Confirm New Password",  val: confirmPw, set: setConfirmPw },
-          ].map(({ label, val, set }) => (
+            { label: "Current Password",     val: currentPw, set: setCurrentPw, show: showCurrent, setShow: setShowCurrent },
+            { label: "New Password",          val: newPw,     set: setNewPw,     show: showNew,     setShow: setShowNew },
+            { label: "Confirm New Password",  val: confirmPw, set: setConfirmPw, show: showConfirm, setShow: setShowConfirm },
+          ].map(({ label, val, set, show, setShow }) => (
             <div key={label}>
               <label className={`block text-xs font-bold uppercase mb-1 ${darkMode ? "text-gray-500" : "text-gray-400"}`}>{label}</label>
-              <input type="password" value={val} onChange={(e) => set(e.target.value)} required
-                className={`w-full p-3 border-2 rounded-xl focus:border-violet-500 outline-none transition-all ${
-                    darkMode ? "bg-gray-800 border-gray-700 text-white" : "bg-white border-gray-100 text-gray-800"
-                }`} />
+              <div className="relative">
+                <input 
+                  type={show ? "text" : "password"} 
+                  value={val} 
+                  onChange={(e) => set(e.target.value)} 
+                  required
+                  className={`w-full p-3 pr-10 border-2 rounded-xl focus:border-violet-500 outline-none transition-all ${
+                      darkMode ? "bg-gray-800 border-gray-700 text-white" : "bg-white border-gray-100 text-gray-800"
+                  }`} 
+                />
+                <button
+                  type="button"
+                  onClick={() => setShow(!show)}
+                  className="absolute right-3 top-3.5 text-gray-400 hover:text-violet-500 transition-colors"
+                >
+                  {show ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
           ))}
           <button type="submit" disabled={loading}
