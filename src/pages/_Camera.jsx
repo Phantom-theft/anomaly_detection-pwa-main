@@ -154,7 +154,7 @@ const _Camera = () => {
 
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <div className="p-4 bg-violet-100 rounded-xl text-violet-600">
+          <div className="p-4 bg-violet-600 rounded-xl text-violet-100">
             <FaCamera className="text-3xl" />
           </div>
           <div>
