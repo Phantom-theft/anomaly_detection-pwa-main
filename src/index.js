@@ -12,7 +12,12 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
         <Provider store={store}>
             <BrowserRouter>
-                <ToastContainer theme="dark" position="top-right" autoClose={3000} />
+                <ToastContainer 
+                    theme="dark" 
+                    position="top-right" 
+                    autoClose={3000} 
+                    hideProgressBar={true}
+                />
                 <App />
             </BrowserRouter>
         </Provider>
