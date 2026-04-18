@@ -142,9 +142,10 @@ const _LoginForm = () => {
           <button 
             type="button"
             onClick={handleForgotPassword} 
-            className='font-bold text-sm text-gray-500 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors'
+            className='font-bold text-sm text-gray-500 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-all flex items-center gap-1 group'
           >
             Forgot password?
+            <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300" />
           </button>
 
           <div className="w-full flex items-center gap-4 py-2">

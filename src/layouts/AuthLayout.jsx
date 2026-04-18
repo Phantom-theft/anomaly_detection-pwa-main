@@ -1,4 +1,5 @@
 // src/layouts/AuthLayout.jsx
+/* eslint-disable react/prop-types */
 import React from "react";
 import logo from "../assets/images/logo.jpg";
 
