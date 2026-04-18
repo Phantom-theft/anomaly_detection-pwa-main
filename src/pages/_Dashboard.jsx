@@ -470,13 +470,16 @@ export default function Dashboard() {
           <IconVideo className="text-violet-500" /> Dashboard
         </h1>
         <button onClick={handleToggleMute}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all ${
+          className={`flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl border transition-all w-auto justify-center ${
             isMuted
               ? (darkMode ? "bg-gray-800 text-gray-400 border-gray-700" : "bg-gray-200 text-gray-500 border-gray-300")
               : "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400 border-violet-200 dark:border-violet-800 shadow-sm ring-2 ring-violet-500/20"}`}>
           <IconVolume isMuted={isMuted} className="w-5 h-5" />
-          <span className="font-semibold text-sm">{isMuted ? "Alert Sound is Muted" : "Alert Sounds On"}</span>
+          <span className="font-bold text-[10px] sm:text-sm uppercase sm:normal-case tracking-tight sm:tracking-normal leading-tight text-center">
+            {isMuted ? "Muted" : "Alert On"}
+          </span>
         </button>
+
       </div>
 
       {/* TOP SECTION: LIVE CAMERA & ALERTS */}

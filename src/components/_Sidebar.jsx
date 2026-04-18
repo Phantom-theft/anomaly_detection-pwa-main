@@ -33,12 +33,6 @@ export default function Sidebar({ sidebar, setSidebar, role }) {
       roles: ["superadmin"],
     },
     {
-      name:  "System Settings",
-      path:  "/system-settings",
-      icon:  <IoSettingsSharp className="text-2xl" />,
-      roles: ["superadmin"],
-    },
-    {
       name:  "Camera",
       path:  "/camera-admin",
       icon:  <GiCctvCamera className="text-2xl" />,
@@ -51,12 +45,6 @@ export default function Sidebar({ sidebar, setSidebar, role }) {
       roles: ["admin"],
     },
     {
-      name:  "Settings",
-      path:  "/settings",
-      icon:  <IoSettingsSharp className="text-2xl" />,
-      roles: ["admin", "user"],
-    },
-    {
       name:  "Camera",
       path:  "/camera",
       icon:  <GiCctvCamera className="text-2xl" />,
@@ -67,6 +55,18 @@ export default function Sidebar({ sidebar, setSidebar, role }) {
       path:  "/alert",
       icon:  <MdNotificationsActive className="text-2xl" />,
       roles: ["user"],
+    },
+    {
+      name:  "System Settings",
+      path:  "/system-settings",
+      icon:  <IoSettingsSharp className="text-2xl" />,
+      roles: ["superadmin"],
+    },
+    {
+      name:  "Settings",
+      path:  "/settings",
+      icon:  <IoSettingsSharp className="text-2xl" />,
+      roles: ["admin", "user"],
     },
   ];
 
