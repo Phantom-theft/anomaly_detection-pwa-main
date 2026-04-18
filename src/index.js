@@ -13,8 +13,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Provider store={store}>
             <BrowserRouter>
                 <ToastContainer 
-                    theme="dark" 
-                    position="top-right" 
+                    theme="colored" 
+                    position="top-center" 
                     autoClose={3000} 
                     hideProgressBar={true}
                 />

@@ -5,12 +5,12 @@ import logo from "../assets/images/logo.jpg";
 
 const AuthLayout = ({ children }) => {
   return (
-    <div className="flex w-full h-screen bg-gray-50 dark:bg-[#030712] transition-colors duration-500 overflow-hidden relative"> 
+    <div className="flex w-full h-screen bg-red-50 dark:bg-[#0f0202] transition-colors duration-500 overflow-hidden relative"> 
       
       {/* Background Polish for Form Side */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30 dark:opacity-20">
-        <div className="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] rounded-full bg-violet-400/20 blur-[100px] animate-pulse"></div>
-        <div className="absolute -bottom-[10%] -right-[10%] w-[60%] h-[60%] rounded-full bg-blue-400/20 blur-[100px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-40 dark:opacity-30">
+        <div className="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] rounded-full bg-red-400/20 blur-[100px] animate-pulse"></div>
+        <div className="absolute -bottom-[10%] -right-[10%] w-[60%] h-[60%] rounded-full bg-rose-400/20 blur-[100px] animate-pulse" style={{ animationDelay: '2s' }}></div>
       </div>
 
       {/* Left side: Form (Full width on mobile, 50% on desktop) */}
