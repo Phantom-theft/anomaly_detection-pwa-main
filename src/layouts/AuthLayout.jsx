@@ -26,9 +26,9 @@ const AuthLayout = ({ children }) => {
           style={{ backgroundImage:`url(${logo})` }}
         ></div>
         
-        {/* Modern Multi-layer Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-violet-950/90 via-violet-900/40 to-transparent"></div>
-        <div className="absolute inset-0 bg-black/10"></div>
+        {/* Responsive Multi-layer Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-white/40 via-transparent to-transparent dark:from-violet-950/90 dark:via-violet-900/40 dark:to-transparent transition-colors duration-500"></div>
+        <div className="absolute inset-0 bg-black/5 dark:bg-black/20 transition-colors duration-500"></div>
       </div> 
 
     </div>
