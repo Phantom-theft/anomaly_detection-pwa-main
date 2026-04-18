@@ -111,11 +111,9 @@ export default function Sidebar({ sidebar, setSidebar, role }) {
       lg:translate-x-0 lg:static z-50 transition-transform flex flex-col border-r border-gray-100 dark:border-gray-800`}>
 
       {/* Header */}
-      <div className="p-6 flex flex-col items-center border-b border-gray-100 dark:border-gray-800 gap-4">
-        <div className="w-full flex justify-between items-center">
-          <img src={logo} alt="Logo"
-            className="h-14 w-14 rounded-full shadow-md border-2 border-violet-100 dark:border-violet-900/30" />
-          <button className="lg:hidden p-2 bg-gray-100 dark:bg-gray-800 rounded-full" onClick={() => setSidebar(false)}>
+      <div className="p-6 flex flex-col items-center border-b border-gray-100 dark:border-gray-800 gap-4 animate-slide-right">
+        <div className="w-full flex justify-end items-center lg:hidden">
+          <button className="p-2 bg-gray-100 dark:bg-gray-800 rounded-full" onClick={() => setSidebar(false)}>
             <FaAngleRight className="text-gray-600 dark:text-gray-400 text-xl" />
           </button>
         </div>
@@ -141,8 +139,9 @@ export default function Sidebar({ sidebar, setSidebar, role }) {
                 key={index}
             to={item.path}
             end={item.path === "/"}
+            style={{ animationDelay: `${index * 0.1}s` }}
             className={({ isActive }) =>
-              `flex items-center gap-4 p-3.5 rounded-2xl transition-all duration-200 group ${
+              `flex items-center gap-4 p-3.5 rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group animate-nav-item active:scale-95 active:duration-75 ${
                 isActive
                   ? "bg-violet-600 text-white shadow-lg shadow-violet-200 dark:shadow-violet-900/20"
                   : `text-gray-600 dark:text-gray-400 ${darkMode ? "hover:bg-gray-800 hover:text-violet-400" : "hover:bg-violet-50 hover:text-violet-600"}`
