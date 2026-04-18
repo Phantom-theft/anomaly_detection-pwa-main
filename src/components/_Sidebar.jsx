@@ -106,7 +106,7 @@ export default function Sidebar({ sidebar, setSidebar, role }) {
   }[role] || { label: role, color: "bg-gray-100 text-gray-500" };
 
   return (
-    <div className={`fixed bg-white dark:bg-gray-900 w-64 h-screen shadow-2xl transition-colors duration-300
+    <div className={`fixed bg-white dark:bg-gray-900 w-64 h-screen shadow-2xl transition-colors duration-300 animate-sidebar-glow
       ${sidebar ? "translate-x-0" : "-translate-x-64"} 
       lg:translate-x-0 lg:static z-50 transition-transform flex flex-col border-r border-gray-100 dark:border-gray-800`}>
 
@@ -118,7 +118,7 @@ export default function Sidebar({ sidebar, setSidebar, role }) {
           </button>
         </div>
         <div className="w-full">
-          <h1 className="font-extrabold text-xl leading-tight text-gray-800 dark:text-white">
+          <h1 className="font-extrabold text-xl leading-tight text-gray-800 dark:text-white animate-branding-breath">
             Anomaly <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-indigo-600">
               Detection System
@@ -141,10 +141,10 @@ export default function Sidebar({ sidebar, setSidebar, role }) {
             end={item.path === "/"}
             style={{ animationDelay: `${index * 0.1}s` }}
             className={({ isActive }) =>
-              `flex items-center gap-4 p-3.5 rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group animate-nav-item active:scale-95 active:duration-75 ${
+              `flex items-center gap-4 p-3.5 rounded-2xl transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group animate-nav-item active:scale-90 will-change-transform ${
                 isActive
-                  ? "bg-violet-600 text-white shadow-lg shadow-violet-200 dark:shadow-violet-900/20"
-                  : `text-gray-600 dark:text-gray-400 ${darkMode ? "hover:bg-gray-800 hover:text-violet-400" : "hover:bg-violet-50 hover:text-violet-600"}`
+                  ? "bg-violet-600 text-white shadow-xl shadow-violet-500/20 translate-x-1"
+                  : `text-gray-600 dark:text-gray-400 ${darkMode ? "hover:bg-gray-800/80 hover:text-violet-400" : "hover:bg-violet-50 hover:text-violet-600"}`
               }`
             }
           >

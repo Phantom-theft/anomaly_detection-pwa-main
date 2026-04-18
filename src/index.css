@@ -214,6 +214,32 @@ body {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-5px); }
   }
+
+  .animate-sidebar-glow {
+    animation: sidebarGlow 4s ease-in-out infinite;
+  }
+
+  @keyframes sidebarGlow {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.1);
+    }
+    50% {
+      box-shadow: 0 0 40px rgba(124, 58, 237, 0.3);
+    }
+  }
+
+  .animate-branding-breath {
+    animation: brandingBreath 4s ease-in-out infinite;
+  }
+
+  @keyframes brandingBreath {
+    0%, 100% {
+      text-shadow: 0 0 5px rgba(124, 58, 237, 0.1);
+    }
+    50% {
+      text-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
+    }
+  }
 }
 
 /* Icon sizes */
