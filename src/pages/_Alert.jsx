@@ -122,10 +122,10 @@ const AlertLogsPage = () => {
 
   const getStyle = (type) => {
     const t = (type || "").toLowerCase();
-    if (t.includes("fighting") || t.includes("pose")) return { icon: <AlertTriangle className="text-red-500" />, bg: "bg-red-50", border: "border-red-500" };
-    if (t.includes("stealing")) return { icon: <Bell className="text-purple-500" />, bg: "bg-purple-50", border: "border-purple-500" };
-    if (t.includes("scanning")) return { icon: <Clock className="text-pink-500" />, bg: "bg-pink-50", border: "border-pink-500" };
-    return { icon: <Clock className="text-blue-500" />, bg: "bg-blue-50", border: "border-blue-500" };
+    if (t.includes("fighting") || t.includes("pose")) return { icon: <AlertTriangle className="text-red-500" />, bg: darkMode ? "bg-red-900/20" : "bg-red-50", border: "border-red-500" };
+    if (t.includes("stealing")) return { icon: <Bell className="text-purple-500" />, bg: darkMode ? "bg-purple-900/20" : "bg-purple-50", border: "border-purple-500" };
+    if (t.includes("scanning")) return { icon: <Clock className="text-pink-500" />, bg: darkMode ? "bg-pink-900/20" : "bg-pink-50", border: "border-pink-500" };
+    return { icon: <Clock className="text-blue-500" />, bg: darkMode ? "bg-blue-900/20" : "bg-blue-50", border: "border-blue-500" };
   };
 
   return (
@@ -135,23 +135,23 @@ const AlertLogsPage = () => {
           <div className="flex items-center gap-4">
             <div className="p-4 bg-violet-600 rounded-3xl text-white shadow-lg"><Bell size={28} /></div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-800 tracking-tight">Active Alerts</h1>
+              <h1 className={`text-3xl font-bold tracking-tight ${darkMode ? "text-white" : "text-gray-800"}`}>Active Alerts</h1>
               <p className="text-gray-500 text-xs font-bold uppercase tracking-widest opacity-70">Filtered by Organization</p>
             </div>
           </div>
         </div>
 
         {error && (
-          <div className="mb-6 p-5 bg-white border-l-8 border-red-500 rounded-3xl shadow-xl flex items-start gap-4">
+          <div className={`mb-6 p-5 border-l-8 border-red-500 rounded-3xl shadow-xl flex items-start gap-4 ${darkMode ? "bg-gray-900" : "bg-white"}`}>
             <div className="p-2 bg-red-100 rounded-xl text-red-600"><ShieldAlert size={28} /></div>
             <div>
               <p className="font-bold uppercase tracking-tight text-xs text-red-600 mb-1">Database Error</p>
-              <p className="text-gray-600 text-sm leading-relaxed">{error}</p>
+              <p className={`text-sm leading-relaxed ${darkMode ? "text-gray-300" : "text-gray-600"}`}>{error}</p>
             </div>
           </div>
         )}
 
-        <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden min-h-[60vh]">
+        <div className={`rounded-[2.5rem] shadow-sm border overflow-hidden min-h-[60vh] ${darkMode ? "bg-gray-900 border-gray-800" : "bg-white border-gray-100"}`}>
           <div className="h-[75vh] overflow-y-auto p-4 custom-scrollbar">
             {loading && !error ? (
               <div className="flex flex-col items-center justify-center h-full text-gray-400">
@@ -170,24 +170,24 @@ const AlertLogsPage = () => {
                   const accuracyPct = alert.accuracy ? Math.round(alert.accuracy * 100) : null;
 
                   return (
-                    <div key={alert.id} className={`flex flex-col md:flex-row items-center gap-6 p-8 border ${border} rounded-[2rem] transition-all bg-white hover:shadow-md`}>
+                    <div key={alert.id} className={`flex flex-col md:flex-row items-center gap-6 p-8 border ${border} rounded-[2rem] transition-all hover:shadow-md ${darkMode ? "bg-gray-800/50" : "bg-white"}`}>
                       <div className="flex-1 space-y-3">
                         <div className="flex items-center gap-3">
                           <div className={`p-2.5 rounded-xl ${bg}`}>{icon}</div>
-                          <span className="font-extrabold text-gray-800 text-xl tracking-tight capitalize">{alert.action}</span>
+                          <span className={`font-extrabold text-xl tracking-tight capitalize ${darkMode ? "text-white" : "text-gray-800"}`}>{alert.action}</span>
                         </div>
                         <div className="flex items-center gap-2 text-xs text-gray-400 font-mono font-bold">
                           <Clock size={12} /> {alert.formattedTime}
                         </div>
-                        <p className="text-sm text-gray-500 leading-relaxed font-medium">
-                          Device: <span className="text-gray-700 font-bold">{alert.camera_name}</span>
+                        <p className={`text-sm leading-relaxed font-medium ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                          Device: <span className={`font-bold ${darkMode ? "text-gray-200" : "text-gray-700"}`}>{alert.camera_name}</span>
                         </p>
 
                         {/* ── Incident Details Card (IBINALIK) ── */}
-                        <div className="mt-2 p-3 bg-gray-50 rounded-2xl border border-gray-100 text-xs space-y-1.5 font-mono">
+                        <div className={`mt-2 p-3 rounded-2xl border text-xs space-y-1.5 font-mono ${darkMode ? "bg-gray-900/50 border-gray-700" : "bg-gray-50 border-gray-100"}`}>
                           <div className="flex justify-between">
                             <span className="text-gray-400 font-bold uppercase tracking-wider">Track ID</span>
-                            <span className="text-gray-700 font-bold">{alert.track_id ?? "—"}</span>
+                            <span className={`font-bold ${darkMode ? "text-gray-300" : "text-gray-700"}`}>{alert.track_id ?? "—"}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-400 font-bold uppercase tracking-wider">Accuracy</span>
@@ -202,21 +202,28 @@ const AlertLogsPage = () => {
                       
                       <div className="w-full md:w-96">
                         {alert.video ? (
-                          <div className="relative group overflow-hidden rounded-[1.5rem] shadow-xl border-4 border-white">
+                          <div className={`relative group overflow-hidden rounded-[1.5rem] shadow-xl border-4 ${darkMode ? "border-gray-700" : "border-white"}`}>
                             <video src={alert.video} controls className="w-full aspect-video object-cover bg-black">
                                 <track kind="captions" />
                             </video>
                           </div>
                         ) : (
-                          <div className="aspect-video rounded-[1.5rem] bg-gray-100 flex flex-col items-center justify-center text-gray-300 border-2 border-dashed border-gray-200">
+                          <div className={`aspect-video rounded-[1.5rem] flex flex-col items-center justify-center border-2 border-dashed ${darkMode ? "bg-gray-900 border-gray-700 text-gray-600" : "bg-gray-100 border-gray-200 text-gray-300"}`}>
                             <Video size={32} className="mb-2" />
                             <span className="text-[10px] font-black uppercase tracking-widest">Processing...</span>
                           </div>
                         )}
                       </div>
                       <div className="flex items-center">
-                        <button onClick={() => confirmDelete(alert)} className="p-4 text-gray-300 hover:text-red-500 transition-all hover:bg-red-50 rounded-2xl group">
-                          <Trash2 size={24} />
+                        <button 
+                          onClick={() => confirmDelete(alert)} 
+                          className={`p-4 transition-all duration-300 rounded-2xl group hover:-translate-y-1.5 active:translate-y-0 ${
+                            darkMode 
+                              ? "text-gray-100 hover:text-red-600 hover:bg-red-300 hover:shadow-[0_8px_25px_-5px_rgba(248,113,113,0.4)]" 
+                              : "text-gray-300 hover:text-red-500 hover:bg-red-50 hover:shadow-[0_8px_25px_-5px_rgba(239,68,68,0.2)]"
+                          }`}
+                        >
+                          <Trash2 size={24} className="transition-colors duration-300" />
                         </button>
                       </div>
                     </div>
