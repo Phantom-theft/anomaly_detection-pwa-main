@@ -189,26 +189,28 @@ const _Camera = () => {
           {activeTab === "rtsp" && (
             <form onSubmit={handleAddCamera} className="flex flex-col gap-5">
               <div>
-                <label htmlFor="cameraName" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="cameraName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   <FaVideo className="inline mr-1 text-xs text-gray-400" /> Camera Name
                 </label>
                 <input
                   id="cameraName" type="text" placeholder="Living Room Camera"
-                  className="w-full border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition duration-150"
+                  className="w-full border border-gray-300 dark:border-gray-700 p-3 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition duration-150 bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
                   value={cameraName} onChange={(e) => setCameraName(e.target.value)} required
+                  autoComplete="off"
                 />
               </div>
               <div>
-                <label htmlFor="rtspUrl" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="rtspUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   <FaLink className="inline mr-1 text-xs text-gray-400" /> RTSP Stream URL
                 </label>
                 <input
                   id="rtspUrl" type="text" placeholder="rtsp://user:password@ip_address:port/stream"
-                  className="w-full border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition duration-150 font-mono text-sm"
+                  className="w-full border border-gray-300 dark:border-gray-700 p-3 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition duration-150 font-mono text-sm bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
                   value={rtspUrl} onChange={(e) => setRtspUrl(e.target.value)} required
+                  autoComplete="off"
                 />
-                <p className="mt-2 text-xs text-gray-500">
-                  Ensure the URL starts with <code className="bg-gray-100 p-1 rounded font-mono">rtsp://</code> and includes authentication if required.
+                <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                  Ensure the URL starts with <code className="bg-gray-100 dark:bg-gray-800 p-1 rounded font-mono">rtsp://</code> and includes authentication if required.
                 </p>
               </div>
               <button type="submit" disabled={loading}
@@ -224,25 +226,27 @@ const _Camera = () => {
           {activeTab === "youtube" && (
             <form onSubmit={handleAddYoutube} className="flex flex-col gap-5">
               <div>
-                <label htmlFor="ytCameraName" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="ytCameraName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   <FaVideo className="inline mr-1 text-xs text-gray-400" /> Camera Name
                 </label>
                 <input
                   id="ytCameraName" type="text" placeholder="YouTube CCTV Feed"
-                  className="w-full border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-red-400 focus:border-red-400 outline-none transition duration-150"
+                  className="w-full border border-gray-300 dark:border-gray-700 p-3 rounded-xl focus:ring-2 focus:ring-red-400 focus:border-red-400 outline-none transition duration-150 bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
                   value={cameraName} onChange={(e) => setCameraName(e.target.value)} required
+                  autoComplete="off"
                 />
               </div>
               <div>
-                <label htmlFor="youtubeUrl" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="youtubeUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   <FaYoutube className="inline mr-1 text-xs text-red-400" /> YouTube URL
                 </label>
                 <input
                   id="youtubeUrl" type="text" placeholder="https://www.youtube.com/watch?v=..."
-                  className="w-full border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-red-400 focus:border-red-400 outline-none transition duration-150 font-mono text-sm"
+                  className="w-full border border-gray-300 dark:border-gray-700 p-3 rounded-xl focus:ring-2 focus:ring-red-400 focus:border-red-400 outline-none transition duration-150 font-mono text-sm bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
                   value={youtubeUrl} onChange={(e) => setYoutubeUrl(e.target.value)} required
+                  autoComplete="off"
                 />
-                <p className="mt-2 text-xs text-gray-500">
+                <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                   Supports YouTube videos and live streams.
                 </p>
               </div>
