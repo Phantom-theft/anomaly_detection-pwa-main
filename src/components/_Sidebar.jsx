@@ -93,21 +93,28 @@ export default function Sidebar({ sidebar, setSidebar, role }) {
         lg:translate-x-0 lg:static z-50 flex flex-col border-r border-gray-100 dark:border-gray-800`}>
 
         {/* Header */}
-        <div className="p-6 flex flex-col items-center border-b border-gray-100 dark:border-gray-800 gap-4 animate-slide-right">
-          <div className="w-full flex justify-end items-center lg:hidden">
-            <button className="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-xl hover:bg-violet-50 transition-colors" onClick={() => setSidebar(false)}>
+        <div className="p-6 flex flex-col border-b border-gray-100 dark:border-gray-800 gap-4 animate-slide-right">
+          <div className="w-full flex justify-between items-start">
+            <div className="flex-1">
+              <h1 className="font-extrabold text-xl leading-tight text-gray-800 dark:text-white animate-branding-breath uppercase tracking-tighter">
+                Anomaly <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-indigo-600">
+                  Detection System
+                </span>
+              </h1>
+            </div>
+            
+            <button 
+              className="lg:hidden p-2.5 bg-gray-100 dark:bg-gray-800 rounded-xl hover:bg-violet-50 transition-colors shadow-sm border border-gray-200 dark:border-gray-700" 
+              onClick={() => setSidebar(false)}
+            >
               <FaAngleRight className="text-gray-600 dark:text-gray-400 text-xl" />
             </button>
           </div>
+          
           <div className="w-full">
-            <h1 className="font-extrabold text-xl leading-tight text-gray-800 dark:text-white animate-branding-breath">
-              Anomaly <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-indigo-600">
-                Detection System
-              </span>
-            </h1>
-            <span className={`mt-2 inline-block text-[10px] font-bold px-2 py-0.5 rounded-full ${darkMode ? "bg-violet-900/30 text-violet-300" : roleBadge.color}`}>
-              {role === "superadmin" && <FaShieldHalved className="inline mr-1" />}
+            <span className={`inline-block text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg ${roleBadge.color}`}>
+              {role === "superadmin" && <FaShieldHalved className="inline mr-1.5" />}
               {roleBadge.label}
             </span>
           </div>
