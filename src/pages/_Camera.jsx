@@ -160,18 +160,20 @@ const _Camera = () => {
         </div>
 
         {/* Form Card */}
-        <div className="p-8 rounded-3xl shadow-2xl bg-white border border-gray-100 mb-8">
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-700">
+        <div className="p-8 rounded-3xl shadow-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 mb-8 transition-colors">
+          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-700 dark:text-gray-200">
             <FaPlus className="text-violet-600 text-lg" /> Connect New Camera
           </h2>
 
           {/* Tab Switcher */}
-          <div className="flex gap-2 mb-6 p-1 bg-gray-100 rounded-xl w-fit">
+          <div className="flex gap-2 mb-6 p-1 bg-gray-100 dark:bg-gray-950 border border-transparent dark:border-gray-800 rounded-xl w-fit">
             <button
               type="button"
               onClick={() => { setActiveTab("rtsp"); setCameraName(""); setRtspUrl(""); setYoutubeUrl(""); }}
               className={`flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold transition duration-200
-                ${activeTab === "rtsp" ? "bg-white text-violet-700 shadow" : "text-gray-500 hover:text-gray-700"}`}
+                ${activeTab === "rtsp" 
+                  ? "bg-white dark:bg-gray-800 text-violet-700 dark:text-violet-400 shadow-md border border-gray-200 dark:border-gray-700" 
+                  : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"}`}
             >
               <FaCamera className="text-xs" /> RTSP Camera
             </button>
@@ -179,7 +181,9 @@ const _Camera = () => {
               type="button"
               onClick={() => { setActiveTab("youtube"); setCameraName(""); setRtspUrl(""); setYoutubeUrl(""); }}
               className={`flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold transition duration-200
-                ${activeTab === "youtube" ? "bg-white text-red-600 shadow" : "text-gray-500 hover:text-gray-700"}`}
+                ${activeTab === "youtube" 
+                  ? "bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 shadow-md border border-gray-200 dark:border-gray-700" 
+                  : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"}`}
             >
               <FaYoutube className="text-xs" /> YouTube Stream
             </button>
