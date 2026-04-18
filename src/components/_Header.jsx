@@ -52,14 +52,6 @@ export default function Header({ sidebar, setSidebar }) {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-4">
-          {/* User Profile Info (Read-only now) */}
-          <div className="hidden sm:flex flex-col items-end">
-            <p className="text-xs font-black text-gray-800 dark:text-gray-200 tracking-tight">{user?.displayName || "Guest"}</p>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Account Active</p>
-          </div>
-
-          <div className="h-8 w-[1px] bg-gray-100 dark:bg-gray-800 mx-1 hidden sm:block"></div>
-
           <button 
             onClick={() => setIsLogoutModalOpen(true)}
             className="group flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-2xl bg-red-50 dark:bg-red-900/10 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 active:scale-95 shadow-sm hover:shadow-red-500/20"
@@ -80,6 +72,7 @@ export default function Header({ sidebar, setSidebar }) {
         confirmText="Sign Out"
         loading={isLoggingOut}
         type="danger"
+        icon={LogOut}
       />
     </>
   );

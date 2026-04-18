@@ -11,7 +11,8 @@ const ConfirmModal = ({
   message, 
   loading = false,
   confirmText = "Confirm",
-  type = "danger" // "danger" (red) or "primary" (violet)
+  type = "danger", // "danger" (red) or "primary" (violet)
+  icon: CustomIcon
 }) => {
   const theme = useSelector(selectTheme);
   const darkMode = theme === 'dark';
@@ -32,7 +33,7 @@ const ConfirmModal = ({
                 ? (darkMode ? "bg-red-900/30 text-red-400" : "bg-red-100 text-red-500") 
                 : (darkMode ? "bg-violet-900/30 text-violet-400" : "bg-violet-100 text-violet-600")
             }`}>
-              {isDanger ? <FaTrash className="text-xl" /> : <FaFloppyDisk className="text-xl" />}
+              {CustomIcon ? <CustomIcon className="text-xl" /> : isDanger ? <FaTrash className="text-xl" /> : <FaFloppyDisk className="text-xl" />}
             </div>
             <h2 className={`text-xl sm:text-2xl font-bold ${darkMode ? "text-white" : "text-gray-800"}`}>
               {title || "Confirmation"}
