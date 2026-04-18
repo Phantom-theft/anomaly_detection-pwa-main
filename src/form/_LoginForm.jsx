@@ -3,6 +3,7 @@ import * as React from 'react'
 import { useState, useEffect } from "react";
 import { login, forgotPassword, checkIfAdminExists } from "../firebase/config"; // Added checkIfAdminExists
 import { toast } from "react-toastify";
+import { Mail, Lock, Eye, EyeOff, ShieldCheck, ArrowRight, Loader2 } from "lucide-react";
 
 const _LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -24,11 +25,11 @@ const _LoginForm = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     setLoading(true);
-    
+
     // Trim and lowercase for consistency
     const safeEmail = email.trim().toLowerCase();
     const result = await login(safeEmail, password); 
-    
+
     if (result && result.user) {
       // Direct navigation based on role from DB
       if (result.role === 'superadmin') {
@@ -47,7 +48,7 @@ const _LoginForm = () => {
     if (!email) {
       return toast.error("Please enter your email first.");
     }
-    
+
     setLoading(true);
     try {
         const safeEmail = email.trim().toLowerCase();
@@ -66,32 +67,48 @@ const _LoginForm = () => {
   };
 
   return (
-      <div className='bg-white dark:bg-gray-800 px-10 py-20 rounded-3xl border-2 border-gray-200 dark:border-gray-700 shadow-lg transition-colors duration-300'>
+      <div className='bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl px-6 py-10 sm:px-10 sm:py-16 rounded-[2.5rem] border border-gray-200/50 dark:border-gray-800/50 shadow-2xl transition-all duration-300 animate-fade-in-up'>
 
-        <h1 className='text-3xl font-semibold mb-4 text-gray-900 dark:text-white'>Anomaly Detection System</h1>
+        <div className="flex flex-col items-center mb-8">
+          <div className="p-4 bg-violet-600 rounded-2xl shadow-lg shadow-violet-500/20 mb-4 transform hover:rotate-6 transition-transform">
+            <ShieldCheck className="w-8 h-8 text-white" />
+          </div>
+          <h1 className='text-3xl font-black text-center text-gray-900 dark:text-white tracking-tight'>
+            Secure <span className="text-violet-600">Access</span>
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2 font-medium text-sm">Anomaly Detection System</p>
+        </div>
 
-        <form onSubmit={handleLogin} className='mt-8'>
+        <form onSubmit={handleLogin} className='space-y-5'>
             <div>
-             <label htmlFor="email" className='text-lg font-medium text-gray-700 dark:text-gray-200'>Email</label>
-             <input
-               id="email"
-               required
-               type="email"
-               className='w-full border-2 border-gray-100 dark:border-gray-700 rounded-xl p-2 mt-1 bg-transparent text-gray-900 dark:text-white'
-               onChange={(e)=>{setEmail(e.target.value)}} 
-               value={email} 
-               placeholder='Enter your email'  
-             />
+             <label htmlFor="email" className='text-xs font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 ml-1'>Email Address</label>
+             <div className="relative mt-2 group">
+               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                 <Mail className="h-5 w-5 text-gray-400 group-focus-within:text-violet-500 transition-colors" />
+               </div>
+               <input
+                 id="email"
+                 required
+                 type="email"
+                 className='w-full pl-11 pr-4 py-3.5 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-violet-500/10 focus:border-violet-500 text-gray-900 dark:text-white transition-all placeholder:text-gray-400 font-medium'
+                 onChange={(e)=>{setEmail(e.target.value)}} 
+                 value={email} 
+                 placeholder='Enter your email'  
+               />
+             </div>
            </div>
 
-           <div className="mt-4">
-             <label htmlFor="password" className='text-lg font-medium text-gray-700 dark:text-gray-200'>Password</label>
-             <div className="relative">
+           <div>
+             <label htmlFor="password" className='text-xs font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 ml-1'>Password</label>
+             <div className="relative mt-2 group">
+                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                   <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-violet-500 transition-colors" />
+                 </div>
                  <input
                    id="password"
                    required
                    type={showPassword ? "text" : "password"} 
-                   className='w-full border-2 border-gray-100 dark:border-gray-700 rounded-xl p-2 mt-1 bg-transparent pr-10 text-gray-900 dark:text-white'
+                   className='w-full pl-11 pr-12 py-3.5 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-violet-500/10 focus:border-violet-500 text-gray-900 dark:text-white transition-all placeholder:text-gray-400 font-medium'
                    onChange={(e) => { setPassword(e.target.value) }} 
                    value={password} 
                    placeholder='Enter your password'  
@@ -99,52 +116,53 @@ const _LoginForm = () => {
                  <button
                      type="button"
                      onClick={() => setShowPassword(!showPassword)}
-                     className="absolute right-3 top-4 text-gray-500 hover:text-violet-500"
+                     className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-violet-500 transition-colors"
                  >
-                     {showPassword ? (
-                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                             <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                             <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                         </svg>
-                     ) : (
-                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                             <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-                         </svg>
-                     )}
+                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                  </button>
              </div>
            </div>
 
-           <div className='mt-8 flex flex-col gap-y-4'>
+           <div className='pt-4'>
             <button 
               type="submit"
               disabled={loading}
-              className='py-2 rounded-xl bg-violet-500 text-white text-lg font-bold hover:bg-violet-600 transition-colors disabled:opacity-50'
+              className='w-full py-4 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-lg font-bold shadow-xl shadow-violet-500/25 hover:shadow-violet-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 disabled:opacity-70 flex items-center justify-center gap-3'
             >
-              {loading ? "Logging in..." : "Login"}
+              {loading ? (
+                <Loader2 className="w-6 h-6 animate-spin" />
+              ) : (
+                <>Sign In <ArrowRight className="w-5 h-5" /></>
+              )}
             </button>
           </div>
         </form>
 
-        <div className='mt-4 flex flex-col items-center gap-2'>
+        <div className='mt-8 flex flex-col items-center gap-4'>
           <button 
             type="button"
             onClick={handleForgotPassword} 
-            className='font-medium text-base text-violet-500 hover:underline'
+            className='font-bold text-sm text-gray-500 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors'
           >
             Forgot password?
           </button>
 
+          <div className="w-full flex items-center gap-4 py-2">
+            <div className="h-px flex-1 bg-gray-100 dark:bg-gray-800"></div>
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Management</span>
+            <div className="h-px flex-1 bg-gray-100 dark:bg-gray-800"></div>
+          </div>
+
           <button 
             type="button"
             onClick={handleSuperAdminRegister} 
-            className='mt-2 font-bold text-sm text-violet-600 hover:text-violet-700 bg-violet-50 px-4 py-2 rounded-lg border border-violet-100 transition-all active:scale-95'
+            className='w-full font-bold text-xs uppercase tracking-widest text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/30 px-4 py-3.5 rounded-xl border border-violet-100 dark:border-violet-900/50 transition-all hover:bg-violet-100 dark:hover:bg-violet-900/50 active:scale-95'
           >
-            Register Super Admin
+            Initialize Super Admin
           </button>
         </div>
-        </div>  
-        );
-        };
+      </div>  
+  );
+};
 
-        export default _LoginForm;
+export default _LoginForm;
