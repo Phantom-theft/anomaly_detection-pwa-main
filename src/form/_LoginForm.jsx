@@ -67,7 +67,7 @@ const _LoginForm = () => {
   };
 
   return (
-      <div className='bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl px-6 py-10 sm:px-10 sm:py-16 rounded-[2.5rem] border border-gray-200/50 dark:border-gray-800/50 shadow-2xl transition-all duration-300 animate-fade-in-up'>
+      <div className='bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl px-6 py-10 sm:px-10 sm:py-16 rounded-[2.5rem] border-2 border-gray-200 dark:border-gray-700 shadow-2xl transition-all duration-300 animate-fade-in-up'>
 
         <div className="flex flex-col items-center mb-8">
           <div className="p-4 bg-violet-600 rounded-2xl shadow-lg shadow-violet-500/20 mb-4 transform hover:rotate-6 transition-transform">

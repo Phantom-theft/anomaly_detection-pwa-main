@@ -29,19 +29,6 @@ const AuthLayout = ({ children }) => {
         {/* Modern Multi-layer Overlay */}
         <div className="absolute inset-0 bg-gradient-to-tr from-violet-950/90 via-violet-900/40 to-transparent"></div>
         <div className="absolute inset-0 bg-black/10"></div>
-        
-        {/* Text Box over Image */}
-        <div className="relative z-10 p-16 w-full max-w-2xl">
-          <div className="backdrop-blur-xl bg-white/10 p-10 rounded-[2.5rem] border border-white/20 shadow-2xl">
-            <h2 className="text-5xl font-black text-white leading-tight mb-6 tracking-tight">
-              AI-Powered <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-300 to-indigo-200">Security</span>
-            </h2>
-            <p className="text-violet-100/90 text-xl font-medium leading-relaxed">
-              Detecting anomalies and securing environments with real-time behavioral analysis.
-            </p>
-          </div>
-        </div>
       </div> 
 
     </div>
