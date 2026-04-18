@@ -4,6 +4,8 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { FaVideo, FaPlus, FaLink, FaCamera, FaTrash, FaYoutube } from "react-icons/fa6";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { selectTheme } from "../store/slices/uiSlice";
 import { app } from "../firebase/config";
 import useAuth from "../hooks/useAuth";
 
@@ -23,6 +25,8 @@ const db = getFirestore(app);
 
 const _Camera = () => {
   const { user, role, organization: orgId } = useAuth(); // Use useAuth for central state
+  const theme = useSelector(selectTheme);
+  const darkMode = theme === 'dark';
   const [activeTab, setActiveTab]       = useState("rtsp");
   const [cameraName, setCameraName]     = useState("");
   const [rtspUrl, setRtspUrl]           = useState("");
@@ -145,7 +149,7 @@ const _Camera = () => {
   };
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className={`p-6 min-h-screen transition-colors duration-300 ${darkMode ? "bg-gray-950" : "bg-gray-50"}`}>
       <div className="max-w-4xl mx-auto">
 
         {/* Header */}

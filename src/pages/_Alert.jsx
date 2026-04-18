@@ -6,6 +6,8 @@ import { toast } from "react-toastify";
 import { db } from "../firebase/config";
 import useAuth from "../hooks/useAuth";
 import ConfirmModal from "../components/ConfirmModal";
+import { useSelector } from "react-redux";
+import { selectTheme } from "../store/slices/uiSlice";
 
 const rawApiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
 let cleanUrl = rawApiUrl.replace(/\/+$/, "");
@@ -23,6 +25,8 @@ const getConfidenceColor = (confidence) => {
 };
 
 const AlertLogsPage = () => {
+  const theme = useSelector(selectTheme);
+  const darkMode = theme === 'dark';
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user, organization: orgId } = useAuth();
