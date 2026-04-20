@@ -1,9 +1,15 @@
 /* eslint-disable */
 import React, { useState, useEffect } from "react";
 import { FaSliders, FaVideo, FaShieldHalved, FaFloppyDisk } from "react-icons/fa6";
+import { Sun, Moon } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleTheme, selectTheme } from "../../store/slices/uiSlice";
 import { toast } from "react-toastify";
 
 const SystemSettings = () => {
+  const dispatch = useDispatch();
+  const theme = useSelector(selectTheme);
+  const darkMode = theme === 'dark';
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   
@@ -92,11 +98,21 @@ const SystemSettings = () => {
       <div className="max-w-4xl mx-auto">
         
         {/* Header */}
-        <div className="mb-8">
-            <h1 className="text-3xl font-extrabold text-gray-800 flex items-center gap-3">
-                <FaShieldHalved className="text-violet-600" /> Platform AI Configuration
-            </h1>
-            <p className="text-gray-500 mt-1 font-medium italic">Adjust the sensitivity and detection parameters of the behavioral core.</p>
+        <div className="mb-8 flex justify-between items-start">
+            <div>
+              <h1 className="text-3xl font-extrabold text-gray-800 flex items-center gap-3">
+                  <FaShieldHalved className="text-violet-600" /> Platform AI Configuration
+              </h1>
+              <p className="text-gray-500 mt-1 font-medium italic">Adjust the sensitivity and detection parameters of the behavioral core.</p>
+            </div>
+            <button 
+              type="button"
+              onClick={() => dispatch(toggleTheme())}
+              className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+              title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              {darkMode ? <Sun size={24} className="text-amber-500" /> : <Moon size={24} className="text-gray-500" />}
+            </button>
         </div>
 
         <form onSubmit={handleSaveSettings} className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -201,4 +217,4 @@ const SystemSettings = () => {
   );
 };
 
-export default SystemSettings;
+export default SystemSettings; 
