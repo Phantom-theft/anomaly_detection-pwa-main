@@ -131,7 +131,7 @@ export default function AdminDashboard() {
                     label="Account Settings" 
                     value="Active"
                     icon={<FaGear />} 
-                    color="bg-gray-200 text-gray-700" 
+                    color="bg-gray-200 text-gray-900" 
                     onClick={() => navigate('/settings')}
                 />
             </div>

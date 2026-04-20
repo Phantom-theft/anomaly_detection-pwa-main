@@ -247,12 +247,12 @@ const SystemUsers = () => {
   };
 
   return (
-    <div className="p-3 sm:p-8 bg-gray-50 min-h-screen relative">
+    <div className="p-3 sm:p-8 bg-gray-50 dark:bg-gray-900 min-h-screen relative transition-colors duration-300">
       <div className="max-w-5xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
             <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-1">System Users</h1>
-                <p className="text-gray-500 text-xs sm:text-sm">Manage authorized standard users and co-admins.</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-1">System Users</h1>
+                <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">Manage authorized standard users and co-admins.</p>
             </div>
             <button 
                 onClick={handleOpenAdd}
@@ -262,20 +262,20 @@ const SystemUsers = () => {
             </button>
         </div>
 
-        <div className="bg-white rounded-2xl sm:rounded-3xl shadow-lg border border-gray-100 overflow-hidden flex flex-col md:max-h-[70vh]"> 
-          <div className="p-5 sm:p-6 border-b border-gray-100 flex items-center gap-3 bg-white z-10">
-            <div className="p-2.5 sm:p-3 bg-violet-100 rounded-xl text-violet-500">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col md:max-h-[70vh] transition-colors"> 
+          <div className="p-5 sm:p-6 border-b border-gray-100 dark:border-gray-700 flex items-center gap-3 bg-white dark:bg-gray-800 z-10">
+            <div className="p-2.5 sm:p-3 bg-violet-100 dark:bg-violet-900/30 rounded-xl text-violet-500 dark:text-violet-400">
                 <FaUserGroup className="text-lg sm:text-xl" />
             </div>
             <div>
-                <h2 className="text-base sm:text-lg font-bold text-gray-800">Authorized Users</h2>
-                <p className="text-xs sm:text-sm text-gray-500">
+                <h2 className="text-base sm:text-lg font-bold text-gray-800 dark:text-white">Authorized Users</h2>
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                     Total manageable accounts: {users.length}
                 </p>
             </div>
           </div>
 
-          <div className="flex-1 overflow-auto scrollbar-thin scrollbar-thumb-violet-200">
+          <div className="flex-1 overflow-auto scrollbar-thin scrollbar-thumb-violet-200 dark:scrollbar-thumb-violet-900">
             {loading ? (
                 <div className="p-10 text-center text-gray-400 font-medium animate-pulse">Loading directory...</div>
             ) : users.length === 0 ? (
@@ -283,7 +283,7 @@ const SystemUsers = () => {
             ) : (
                 <div className="overflow-x-auto">
                   <table className="min-w-full text-left whitespace-nowrap">
-                      <thead className="bg-gray-50 text-gray-500 font-bold text-[10px] sm:text-xs uppercase tracking-widest sticky top-0 z-10">
+                      <thead className="bg-gray-50 dark:bg-gray-900/50 text-gray-500 dark:text-gray-400 font-bold text-[10px] sm:text-xs uppercase tracking-widest sticky top-0 z-10">
                           <tr>
                               <th className="p-3 sm:p-4 pl-5 sm:pl-6">User Profile</th>
                               <th className="p-3 sm:p-4">Email Address</th>
@@ -291,22 +291,22 @@ const SystemUsers = () => {
                               <th className="p-3 sm:p-4 text-center">Manage</th>
                           </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-100">
+                      <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                           {users.map((user) => (
-                              <tr key={user.id} className="hover:bg-violet-50/50 transition-colors group">
+                              <tr key={user.id} className="hover:bg-violet-50/50 dark:hover:bg-violet-900/10 transition-colors group">
                                   <td className="p-3 sm:p-4 pl-5 sm:pl-6">
                                       <div className="flex items-center gap-2 sm:gap-3">
                                           <img 
                                               src={user.photoURL || `https://api.dicebear.com/9.x/initials/svg?seed=${user.username || "User"}`} 
                                               alt="avatar" 
-                                              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-100 object-cover border border-gray-200"
+                                              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-100 dark:bg-gray-700 object-cover border border-gray-200 dark:border-gray-600"
                                           />
-                                          <span className="font-bold text-gray-700 text-sm sm:text-base">{user.username || "Unknown"}</span>
+                                          <span className="font-bold text-gray-700 dark:text-gray-200 text-sm sm:text-base">{user.username || "Unknown"}</span>
                                       </div>
                                   </td>
-                                  <td className="p-3 sm:p-4 text-gray-600 text-xs sm:text-sm">
+                                  <td className="p-3 sm:p-4 text-gray-600 dark:text-gray-400 text-xs sm:text-sm">
                                       <div className="flex items-center gap-1.5 sm:gap-2">
-                                          <FaEnvelope className="text-gray-300 flex-shrink-0" /> 
+                                          <FaEnvelope className="text-gray-300 dark:text-gray-600 flex-shrink-0" /> 
                                           <span className="truncate max-w-[100px] xs:max-w-[150px] sm:max-w-none" title={user.email}>
                                               {user.email}
                                           </span>
@@ -314,14 +314,14 @@ const SystemUsers = () => {
                                   </td>
                                   <td className="p-3 sm:p-4">
                                       <span className={`inline-block px-2 sm:px-3 py-1 text-[9px] sm:text-[10px] uppercase tracking-wider font-bold rounded-full 
-                                          ${user.role === 'superadmin' ? 'bg-purple-100 text-purple-700' : user.role === 'admin' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
+                                          ${user.role === 'superadmin' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400' : user.role === 'admin' ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' : 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'}`}>
                                           {user.role || 'user'}
                                       </span>
                                   </td>
                                   <td className="p-3 sm:p-4 text-center">
                                       <div className="flex justify-center gap-1 sm:gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-                                          <button onClick={() => handleOpenEdit(user)} className="p-2 text-blue-500 hover:bg-blue-100 rounded-lg active:scale-90 transition-transform"><FaPen /></button>
-                                          <button onClick={() => openDeleteModal(user.id)} className="p-2 text-red-500 hover:bg-red-100 rounded-lg active:scale-90 transition-transform"><FaTrash /></button>
+                                          <button onClick={() => handleOpenEdit(user)} className="p-2 text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg active:scale-90 transition-transform"><FaPen /></button>
+                                          <button onClick={() => openDeleteModal(user.id)} className="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg active:scale-90 transition-transform"><FaTrash /></button>
                                       </div>
                                   </td>
                               </tr>
@@ -357,33 +357,47 @@ const SystemUsers = () => {
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm p-4 overflow-y-auto">
-            <div className="bg-white p-6 sm:p-8 rounded-3xl w-full max-w-md shadow-2xl scale-in-center">
+            <div className="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-3xl w-full max-w-md shadow-2xl scale-in-center transition-colors">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-800">{currentAction === "add" ? "New Account" : "Update Account"}</h2>
-                    <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full"><FaXmark className="text-xl text-gray-400" /></button>
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">{currentAction === "add" ? "New Account" : "Update Account"}</h2>
+                    <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors">
+                        <FaXmark className="text-xl text-gray-400 dark:text-gray-500" />
+                    </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="text-xs font-bold text-gray-400 uppercase">Username</label>
-                        <input required type="text" className="w-full border-2 border-gray-100 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 transition-all" value={formData.username} onChange={(e) => setFormData({...formData, username: e.target.value})} />
+                        <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Username</label>
+                        <input 
+                            required 
+                            type="text" 
+                            className="w-full border-2 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 dark:focus:border-violet-400 transition-all" 
+                            value={formData.username} 
+                            onChange={(e) => setFormData({...formData, username: e.target.value})} 
+                        />
                     </div>
                     <div>
-                        <label className="text-xs font-bold text-gray-400 uppercase">Email Address</label>
-                        <input required type="email" className="w-full border-2 border-gray-100 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 transition-all" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
+                        <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Email Address</label>
+                        <input 
+                            required 
+                            type="email" 
+                            className="w-full border-2 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 dark:focus:border-violet-400 transition-all" 
+                            value={formData.email} 
+                            onChange={(e) => setFormData({...formData, email: e.target.value})} 
+                        />
                     </div>
                     
                     {/* Access Level - Locked for Admins */}
                     <div>
-                        <label className="text-xs font-bold text-gray-400 uppercase">Access Level</label>
+                        <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Access Level</label>
                         {userRole === "admin" ? (
-                            <div className="w-full bg-gray-50 border-2 border-gray-100 p-3 rounded-xl mt-1 text-gray-600 font-bold flex items-center gap-2 select-none">
+                            <div className="w-full bg-gray-50 dark:bg-gray-900/50 border-2 border-gray-100 dark:border-gray-700 p-3 rounded-xl mt-1 text-gray-600 dark:text-gray-400 font-bold flex items-center gap-2 select-none">
                                 <div className="w-2 h-2 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
                                 Standard User
                             </div>
                         ) : (
                             <select 
-                                className="w-full border-2 border-gray-100 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 transition-all font-semibold text-gray-700" 
+                                className="w-full border-2 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 dark:focus:border-violet-400 transition-all font-semibold" 
                                 value={formData.role} 
                                 onChange={(e) => setFormData({...formData, role: e.target.value})}
                             >
@@ -392,81 +406,81 @@ const SystemUsers = () => {
                             </select>
                         )}
                         {userRole === "admin" && (
-                            <p className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-tight">
+                            <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 uppercase font-bold tracking-tight">
                                 Role management is restricted to Household Admin.
                             </p>
                         )}
                     </div>
                     
-                    {/* SHOW VERIFICATION FOR BOTH ADD AND EDIT */}
                     <div>
-                        <label className="text-xs font-bold text-gray-400 uppercase">Email Verification</label>
-                        <div className="flex gap-2 mt-1">
-                            <button
-                            type="button"
-                            onClick={handleSendCode}
-                            disabled={codeLoading || codeExpiry > 0}
-                            className="px-4 py-2 rounded-xl bg-violet-500 text-white font-bold disabled:opacity-50"
-                            >
-                            {codeLoading
-                                ? "Sending..."
-                                : codeExpiry > 0
-                                ? `Resend in ${codeExpiry}s`
-                                : "Send Code"}
-                            </button>
-                        </div>
-                    </div>
-
-                    {codeSent && (
-                    <div>
-                        <label className="text-xs font-bold text-gray-400 uppercase">Verification Code</label>
-                        <input
-                        type="text"
-                        required
-                        className="w-full border-2 border-gray-100 p-2 sm:p-3 rounded-xl mt-1"
-                        value={code}
-                        onChange={(e) => setCode(e.target.value)}
-                        />
-
-                        {codeExpiry <= 0 && (
-                        <p className="text-xs text-red-500 mt-1">
-                            Verification code expired. Please resend.
-                        </p>
-                        )}
-                    </div>
-                    )}
-
-                    <div>
-                        <label className="text-xs font-bold text-gray-400 uppercase">
+                        <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">
                             Temporary Password
                         </label>
                         <input
                             required={currentAction === "add"}
                             type="text"
                             placeholder={currentAction === "edit" ? "Leave blank to keep current" : ""}
-                            className="w-full border-2 border-gray-100 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 transition-all"
+                            className="w-full border-2 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 dark:focus:border-violet-400 transition-all"
                             value={formData.password}
                             onChange={(e) =>
-                            setFormData({ ...formData, password: e.target.value })
+                                setFormData({ ...formData, password: e.target.value })
                             }
                         />
-                        <p className="text-[10px] text-gray-400 mt-1 uppercase font-bold">
+                        <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 uppercase font-bold">
                             Must be at least 6 characters
                         </p>
                     </div>
+
+                    {/* SHOW VERIFICATION FOR BOTH ADD AND EDIT */}
+                    <div>
+                        <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Email Verification</label>
+                        <div className="flex gap-2 mt-1">
+                            <button
+                                type="button"
+                                onClick={handleSendCode}
+                                disabled={codeLoading || codeExpiry > 0}
+                                className="px-4 py-2 rounded-xl bg-violet-500 text-white font-bold disabled:opacity-50 transition-opacity"
+                            >
+                                {codeLoading
+                                    ? "Sending..."
+                                    : codeExpiry > 0
+                                    ? `Resend in ${codeExpiry}s`
+                                    : "Send Code"}
+                            </button>
+                        </div>
+                    </div>
+
+                    {codeSent && (
+                        <div>
+                            <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Verification Code</label>
+                            <input
+                                type="text"
+                                required
+                                className="w-full border-2 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 dark:focus:border-violet-400 transition-all"
+                                value={code}
+                                onChange={(e) => setCode(e.target.value)}
+                            />
+
+                            {codeExpiry <= 0 && (
+                                <p className="text-xs text-red-500 mt-1">
+                                    Verification code expired. Please resend.
+                                </p>
+                            )}
+                        </div>
+                    )}
 
                     <div className="flex flex-col sm:flex-row gap-3 mt-6">
                         <button 
                             type="button"
                             onClick={() => setIsModalOpen(false)}
-                            className="flex-1 px-6 py-3 rounded-2xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-all active:scale-95"
+                            className="flex-1 px-6 py-3 rounded-2xl font-bold text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all active:scale-95"
                         >
                             Cancel
                         </button>
                         <button 
                             type="submit" 
                             disabled={submitting} 
-                            className="flex-[2] bg-violet-600 hover:bg-violet-700 text-white py-3 sm:py-4 rounded-2xl font-bold transition-all disabled:opacity-50 shadow-lg shadow-violet-100"
+                            className="flex-[2] bg-violet-600 hover:bg-violet-700 text-white py-3 sm:py-4 rounded-2xl font-bold transition-all disabled:opacity-50 shadow-lg shadow-violet-100 dark:shadow-none"
                         >
                             {submitting ? "Processing..." : currentAction === "add" ? "Create Account" : "Save Changes"}
                         </button>

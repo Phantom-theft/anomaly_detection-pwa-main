@@ -78,11 +78,11 @@ const _CameraAdmin = () => {
 
         {/* Camera List Container */}
         <div className="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-10">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold text-gray-800 flex items-center gap-3">
+          <div className="flex items-center justify-between mb-8 gap-2">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-800 flex items-center gap-3">
                 <FaVideo className="text-violet-500" /> Authorized Devices
             </h2>
-            <span className="bg-violet-100 text-violet-700 px-4 py-1.5 rounded-full font-bold text-xs uppercase tracking-widest">
+            <span className="bg-violet-100 text-violet-700 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full font-bold text-[10px] sm:text-xs uppercase tracking-widest whitespace-nowrap">
                 {cameraList.length} Connected
             </span>
           </div>
