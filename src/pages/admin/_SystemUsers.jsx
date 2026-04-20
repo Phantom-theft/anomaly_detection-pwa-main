@@ -247,29 +247,29 @@ const SystemUsers = () => {
   };
 
   return (
-    <div className="p-4 sm:p-8 bg-gray-50 min-h-screen relative">
+    <div className="p-3 sm:p-8 bg-gray-50 min-h-screen relative">
       <div className="max-w-5xl mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4 sm:gap-0">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
             <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-1">System Users</h1>
-                <p className="text-gray-500 text-sm">Manage authorized standard users and co-admins.</p>
+                <p className="text-gray-500 text-xs sm:text-sm">Manage authorized standard users and co-admins.</p>
             </div>
             <button 
                 onClick={handleOpenAdd}
-                className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 shadow-lg transition-all active:scale-95"
+                className="w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-white px-5 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95"
             >
                 <FaPlus /> Add User
             </button>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden flex flex-col max-h-[70vh]"> 
-          <div className="p-4 sm:p-6 border-b border-gray-100 flex items-center gap-3 bg-white z-10">
-            <div className="p-3 bg-violet-100 rounded-xl text-violet-500">
-                <FaUserGroup className="text-xl" />
+        <div className="bg-white rounded-2xl sm:rounded-3xl shadow-lg border border-gray-100 overflow-hidden flex flex-col md:max-h-[70vh]"> 
+          <div className="p-5 sm:p-6 border-b border-gray-100 flex items-center gap-3 bg-white z-10">
+            <div className="p-2.5 sm:p-3 bg-violet-100 rounded-xl text-violet-500">
+                <FaUserGroup className="text-lg sm:text-xl" />
             </div>
             <div>
-                <h2 className="text-lg font-bold text-gray-800">Authorized Users</h2>
-                <p className="text-sm text-gray-500">
+                <h2 className="text-base sm:text-lg font-bold text-gray-800">Authorized Users</h2>
+                <p className="text-xs sm:text-sm text-gray-500">
                     Total manageable accounts: {users.length}
                 </p>
             </div>
@@ -277,15 +277,15 @@ const SystemUsers = () => {
 
           <div className="flex-1 overflow-auto scrollbar-thin scrollbar-thumb-violet-200">
             {loading ? (
-                <div className="p-8 text-center text-gray-400">Loading directory...</div>
+                <div className="p-10 text-center text-gray-400 font-medium animate-pulse">Loading directory...</div>
             ) : users.length === 0 ? (
-                <div className="p-8 text-center text-gray-400">No users found.</div>
+                <div className="p-10 text-center text-gray-400">No users found.</div>
             ) : (
                 <div className="overflow-x-auto">
-                  <table className="min-w-full text-left">
-                      <thead className="bg-gray-50 text-gray-500 font-medium text-sm sticky top-0 z-10">
+                  <table className="min-w-full text-left whitespace-nowrap">
+                      <thead className="bg-gray-50 text-gray-500 font-bold text-[10px] sm:text-xs uppercase tracking-widest sticky top-0 z-10">
                           <tr>
-                              <th className="p-3 sm:p-4 pl-4 sm:pl-6">User Profile</th>
+                              <th className="p-3 sm:p-4 pl-5 sm:pl-6">User Profile</th>
                               <th className="p-3 sm:p-4">Email Address</th>
                               <th className="p-3 sm:p-4">Role</th>
                               <th className="p-3 sm:p-4 text-center">Manage</th>
@@ -294,29 +294,34 @@ const SystemUsers = () => {
                       <tbody className="divide-y divide-gray-100">
                           {users.map((user) => (
                               <tr key={user.id} className="hover:bg-violet-50/50 transition-colors group">
-                                  <td className="p-2 sm:p-4 pl-2 sm:pl-6 flex items-center gap-2 sm:gap-3">
-                                      <img 
-                                          src={user.photoURL || `https://api.dicebear.com/9.x/initials/svg?seed=${user.username || "User"}`} 
-                                          alt="avatar" 
-                                          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-100 object-cover border border-gray-200"
-                                      />
-                                      <span className="font-semibold text-gray-700 text-sm sm:text-base">{user.username || "Unknown"}</span>
-                                  </td>
-                                  <td className="p-2 sm:p-4 text-gray-600 text-xs sm:text-sm">
-                                      <div className="flex items-center gap-1 sm:gap-2">
-                                          <FaEnvelope className="text-gray-300" /> {user.email}
+                                  <td className="p-3 sm:p-4 pl-5 sm:pl-6">
+                                      <div className="flex items-center gap-2 sm:gap-3">
+                                          <img 
+                                              src={user.photoURL || `https://api.dicebear.com/9.x/initials/svg?seed=${user.username || "User"}`} 
+                                              alt="avatar" 
+                                              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-100 object-cover border border-gray-200"
+                                          />
+                                          <span className="font-bold text-gray-700 text-sm sm:text-base">{user.username || "Unknown"}</span>
                                       </div>
                                   </td>
-                                  <td className="p-2 sm:p-4">
+                                  <td className="p-3 sm:p-4 text-gray-600 text-xs sm:text-sm">
+                                      <div className="flex items-center gap-1.5 sm:gap-2">
+                                          <FaEnvelope className="text-gray-300 flex-shrink-0" /> 
+                                          <span className="truncate max-w-[100px] xs:max-w-[150px] sm:max-w-none" title={user.email}>
+                                              {user.email}
+                                          </span>
+                                      </div>
+                                  </td>
+                                  <td className="p-3 sm:p-4">
                                       <span className={`inline-block px-2 sm:px-3 py-1 text-[9px] sm:text-[10px] uppercase tracking-wider font-bold rounded-full 
                                           ${user.role === 'superadmin' ? 'bg-purple-100 text-purple-700' : user.role === 'admin' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
                                           {user.role || 'user'}
                                       </span>
                                   </td>
-                                  <td className="p-2 sm:p-4 text-center">
-                                      <div className="flex justify-center gap-1 sm:gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                          <button onClick={() => handleOpenEdit(user)} className="p-2 text-blue-500 hover:bg-blue-100 rounded-lg"><FaPen /></button>
-                                          <button onClick={() => openDeleteModal(user.id)} className="p-2 text-red-500 hover:bg-red-100 rounded-lg"><FaTrash /></button>
+                                  <td className="p-3 sm:p-4 text-center">
+                                      <div className="flex justify-center gap-1 sm:gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                                          <button onClick={() => handleOpenEdit(user)} className="p-2 text-blue-500 hover:bg-blue-100 rounded-lg active:scale-90 transition-transform"><FaPen /></button>
+                                          <button onClick={() => openDeleteModal(user.id)} className="p-2 text-red-500 hover:bg-red-100 rounded-lg active:scale-90 transition-transform"><FaTrash /></button>
                                       </div>
                                   </td>
                               </tr>
