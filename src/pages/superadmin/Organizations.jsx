@@ -338,41 +338,41 @@ const Organizations = () => {
 
       {/* Dynamic Modal (Add / Edit) */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm p-4 overflow-y-auto">
-            <div className="bg-white p-6 sm:p-8 rounded-3xl w-full max-w-md shadow-2xl scale-in-center mt-10 mb-10">
+        <div className="fixed inset-0 bg-black/40 dark:bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm p-4 overflow-y-auto">
+            <div className="bg-white dark:bg-gray-900 p-6 sm:p-8 rounded-3xl w-full max-w-md shadow-2xl scale-in-center mt-10 mb-10 transition-colors">
                 <div className="flex justify-between items-center mb-6">
                     <div>
-                        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+                        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">
                             {currentAction === "add" ? "New Organization" : "Update Organization"}
                         </h2>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
                             {currentAction === "add" ? "Create a landlord/admin and their household." : "Edit business name and admin details."}
                         </p>
                     </div>
-                    <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full"><FaXmark className="text-xl text-gray-400" /></button>
+                    <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"><FaXmark className="text-xl text-gray-400 dark:text-gray-500" /></button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="p-3 bg-gray-50 border border-gray-100 rounded-xl mb-4">
+                    <div className="p-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 rounded-xl mb-4">
                         <label className="text-xs font-bold text-violet-600 uppercase">Organization / House Name</label>
-                        <input required type="text" placeholder="e.g. Realino Apartments" className="w-full bg-transparent p-2 mt-1 outline-none text-gray-800 font-semibold" value={formData.orgName} onChange={(e) => setFormData({...formData, orgName: e.target.value})} />
+                        <input required type="text" placeholder="e.g. Realino Apartments" className="w-full bg-transparent p-2 mt-1 outline-none text-gray-800 dark:text-white font-semibold placeholder:text-gray-400 dark:placeholder:text-gray-600" value={formData.orgName} onChange={(e) => setFormData({...formData, orgName: e.target.value})} />
                     </div>
 
                     <div>
-                        <label className="text-xs font-bold text-gray-400 uppercase">Admin Username</label>
-                        <input required type="text" className="w-full border-2 border-gray-100 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 transition-all" value={formData.username} onChange={(e) => setFormData({...formData, username: e.target.value})} />
+                        <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Admin Username</label>
+                        <input required type="text" className="w-full border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 text-gray-800 dark:text-white transition-all" value={formData.username} onChange={(e) => setFormData({...formData, username: e.target.value})} />
                     </div>
 
                     <div>
-                        <label className="text-xs font-bold text-gray-400 uppercase">Admin Email Address</label>
-                        <input required type="email" className="w-full border-2 border-gray-100 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 transition-all" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
+                        <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Admin Email Address</label>
+                        <input required type="email" className="w-full border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 text-gray-800 dark:text-white transition-all" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
                     </div>
                     
                     {/* ITATAGO NATIN ANG OTP AT PASSWORD KAPAG EDIT MODE NA LANG */}
                     {currentAction === "add" && (
                         <>
                             <div>
-                                <label className="text-xs font-bold text-gray-400 uppercase">Email Verification</label>
+                                <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Email Verification</label>
                                 <div className="flex gap-2 mt-1">
                                     <button type="button" onClick={handleSendCode} disabled={codeLoading || codeExpiry > 0} className="px-4 py-2 rounded-xl bg-violet-500 text-white font-bold disabled:opacity-50">
                                     {codeLoading ? "Sending..." : codeExpiry > 0 ? `Resend in ${codeExpiry}s` : "Send Code"}
@@ -382,20 +382,20 @@ const Organizations = () => {
 
                             {codeSent && (
                             <div>
-                                <label className="text-xs font-bold text-gray-400 uppercase">Verification Code</label>
-                                <input type="text" required className="w-full border-2 border-gray-100 p-2 sm:p-3 rounded-xl mt-1" value={code} onChange={(e) => setCode(e.target.value)} />
+                                <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Verification Code</label>
+                                <input type="text" required className="w-full border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 p-2 sm:p-3 rounded-xl mt-1 text-gray-800 dark:text-white" value={code} onChange={(e) => setCode(e.target.value)} />
                                 {codeExpiry <= 0 && <p className="text-xs text-red-500 mt-1">Verification code expired. Please resend.</p>}
                             </div>
                             )}
 
                             <div>
-                                <label className="text-xs font-bold text-gray-400 uppercase">Temporary Admin Password</label>
-                                <input required type="text" className="w-full border-2 border-gray-100 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 transition-all" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
+                                <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Temporary Admin Password</label>
+                                <input required type="text" className="w-full border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 text-gray-800 dark:text-white transition-all" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
                             </div>
                         </>
                     )}
 
-                    <button type="submit" disabled={submitting} className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 sm:py-4 rounded-2xl font-bold transition-all disabled:opacity-50 shadow-lg shadow-violet-100 mt-4">
+                    <button type="submit" disabled={submitting} className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 sm:py-4 rounded-2xl font-bold transition-all disabled:opacity-50 shadow-lg shadow-violet-100 dark:shadow-none mt-4">
                         {submitting ? "Processing..." : currentAction === "add" ? "Create Organization" : "Save Changes"}
                     </button>
                 </form>
