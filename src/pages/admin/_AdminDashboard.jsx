@@ -102,9 +102,9 @@ export default function AdminDashboard() {
               <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800 tracking-tight">Admin Dashboard</h1>
               <p className="text-gray-500 mt-1">Manage your organization's cameras and users.</p>
             </div>
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 min-w-[200px] text-right">
-              <p className="text-3xl font-bold text-violet-600 tabular-nums">{formattedTime}</p>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-1">{formattedDate}</p>
+            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 w-full md:w-auto md:min-w-[200px] text-center md:text-right">
+              <p className="text-2xl sm:text-3xl font-bold text-violet-600 tabular-nums">{formattedTime}</p>
+              <p className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-widest mt-1">{formattedDate}</p>
             </div>
           </div>
 
