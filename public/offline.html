@@ -1,44 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Anomaly Detection App</title>
-        <style type="text/css">
-            html {
-                height: 100%;
-            }
-            body {
-                height: 100%;
-                margin: 0;
-                background: #0a1f44;
-                display: flex;
-                align-items: center;
-                text-align: center;
-                justify-content: center;
-            }
-        
-            .city {
-                align-items: center;
-                width: 80%;
-                display: flex;
-                justify-content: center;
-                flex-direction: column;
-                padding: 40px 8%;
-                border-radius: 20px;
-                background: #fff;
-            }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline | Anomaly Detection</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
 
-            .city-name {
-                font-size: 2em;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="city">
-            <h2 class="city-name">
-                <span>Please go online.</span>
-            </h2>
+        html, body {
+            height: 100%;
+            background: #030712; /* Matches your dashboard dark mode */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f9fafb;
+        }
+    
+        .city {
+            align-items: center;
+            width: 90%;
+            max-width: 400px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            padding: 50px 30px;
+            border-radius: 24px;
+            background: #111827; /* Dark card background */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .icon-box {
+            margin-bottom: 24px;
+            color: #7c3aed; /* Violet-500 accent */
+        }
+
+        .city-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.025em;
+        }
+
+        .message {
+            color: #9ca3af;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+
+        .retry-text {
+            font-size: 0.75rem;
+            color: #4b5563;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="city">
+        <div class="icon-box">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+                <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+                <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+                <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+                <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+                <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                <line x1="12" y1="20" x2="12.01" y2="20"></line>
+            </svg>
         </div>
-    </body>
+        <h2 class="city-name">
+            <span>Please go online.</span>
+        </h2>
+        <p class="message">You are currently offline. Check your internet connection to resume anomaly detection.</p>
+        
+        <div class="retry-text">
+            <span class="pulse-dot"></span> Offline Mode
+        </div>
+    </div>
+</body>
 </html>
