@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: anomaly-detection-pwa
+    env: static
+    buildCommand: npm run build
+    publishPath: ./build
+    routes:
+      - src: /*
+        dest: /index.html
