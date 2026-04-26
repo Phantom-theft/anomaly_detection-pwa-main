@@ -14,7 +14,7 @@ const AuthLayout = ({ children }) => {
       </div>
 
       {/* Left side: Form (Full width on mobile, 50% on desktop) */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative z-10">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-12 relative z-10">
         <div className="w-full max-w-md animate-fade-in-up">
           {children}
         </div>
