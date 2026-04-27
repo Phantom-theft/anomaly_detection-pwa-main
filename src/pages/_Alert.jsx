@@ -35,6 +35,7 @@ const AlertLogsPage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [alertToDelete, setAlertToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const alertRefs = useRef({});
 
@@ -95,7 +96,12 @@ const AlertLogsPage = () => {
     });
 
     return () => unsubscribe && unsubscribe();
-  }, [user, orgId]);
+  }, [user, orgId, refreshKey]);
+
+  const handleRefresh = () => {
+    setRefreshKey(prev => prev + 1);
+    toast.info("Syncing with database...");
+  };
 
   const confirmDelete = (alert) => {
     setAlertToDelete(alert);
@@ -139,6 +145,21 @@ const AlertLogsPage = () => {
               <p className="text-gray-500 text-xs font-bold uppercase tracking-widest opacity-70">Filtered by Organization</p>
             </div>
           </div>
+
+          <button 
+            onClick={handleRefresh}
+            className={`group p-4 rounded-3xl transition-all duration-500 shadow-lg hover:shadow-violet-500/20 active:scale-95 ${
+              darkMode 
+                ? "bg-gray-900 border border-gray-800 text-violet-400 hover:bg-gray-800" 
+                : "bg-white border border-gray-100 text-violet-600 hover:bg-gray-50"
+            }`}
+            title="Refresh Alerts"
+          >
+            <RefreshCw 
+              size={24} 
+              className={`transition-transform duration-500 ${loading ? "animate-spin" : "group-hover:rotate-180"}`} 
+            />
+          </button>
         </div>
 
         {error && (
