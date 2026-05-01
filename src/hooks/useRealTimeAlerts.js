@@ -117,7 +117,14 @@ const useRealTimeAlerts = (options = {}) => {
   }, []);
 
   const showNotification = useCallback((data) => {
-    console.log('[useRealTimeAlerts] showNotification called with permission:', Notification.permission);
+    const isAppEnabled = localStorage.getItem('notifications_enabled') !== 'false';
+    console.log('[useRealTimeAlerts] showNotification called. App Enabled:', isAppEnabled, 'Permission:', Notification.permission);
+    
+    if (!isAppEnabled) {
+      console.log('[useRealTimeAlerts] Notifications are disabled in app settings.');
+      return;
+    }
+
     if (Notification.permission !== "granted") {
       console.warn('[useRealTimeAlerts] Notification permission not granted. Current state:', Notification.permission);
       return;

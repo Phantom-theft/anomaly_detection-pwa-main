@@ -234,19 +234,24 @@ export default function Settings() {
   const { requestNotificationPermission, triggerAlert } = useRealTimeAlerts({ autoConnect: false });
   const navigate            = useNavigate();
 
-  const [notificationsEnabled, setNotificationsEnabled] = useState(
-    "Notification" in window && Notification.permission === "granted"
-  );
+  const [notificationsEnabled, setNotificationsEnabled] = useState(() => {
+    const saved = localStorage.getItem('notifications_enabled');
+    if (saved !== null) return saved === 'true';
+    return "Notification" in window && Notification.permission === "granted";
+  });
 
   const handleToggleNotifications = async () => {
     if (notificationsEnabled) {
-      toast.info("To disable notifications, please use your browser settings.");
+      setNotificationsEnabled(false);
+      localStorage.setItem('notifications_enabled', 'false');
+      toast.info("Notifications disabled in app.");
       return;
     }
     
     const granted = await requestNotificationPermission();
     if (granted) {
       setNotificationsEnabled(true);
+      localStorage.setItem('notifications_enabled', 'true');
       toast.success("Notifications enabled!");
     } else {
       toast.error("Notification permission denied or not supported.");
