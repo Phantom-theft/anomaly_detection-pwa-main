@@ -42,6 +42,7 @@ self.addEventListener('fetch', (event) => {
     if (
         event.request.url.includes('/video/') || 
         event.request.url.includes(':5000') || 
+        event.request.url.includes('ngrok-free.dev') ||
         event.request.url.includes('cloudinary.com') ||
         event.request.url.includes('firebasestorage.googleapis.com')
     ) {
