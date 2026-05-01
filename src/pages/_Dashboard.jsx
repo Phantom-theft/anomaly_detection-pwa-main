@@ -91,7 +91,7 @@ const CameraFeed = ({ cameraNames, serverUrl, darkMode }) => {
               <div key={cam} className="relative">
                 <span className="absolute top-2 left-2 z-10 text-[10px] bg-black/60 text-white px-2 py-0.5 rounded-full font-mono uppercase">{cam}</span>
                 <img src={`${serverUrl}/video/${cam}?t=${Date.now()}`} alt={cam} className="w-full rounded"
-                  style={{ height: cameraNames.length === 1 ? "450px" : "220px", objectFit: "cover" }}
+                  style={{ height: cameraNames.length === 1 ? "450px" : "220px", objectFit: "fill" }}
                   onError={(e) => { e.target.src = "https://via.placeholder.com/640x360?text=Stream+Loading..."; }} />
               </div>
             ))}
