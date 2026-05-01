@@ -603,24 +603,6 @@ export default function Settings() {
                 desc="Receive alerts even when the app is in the background"
                 action={<Toggle enabled={notificationsEnabled} onChange={handleToggleNotifications} />}
               />
-              <div className={`px-6 py-4 flex justify-between items-center ${darkMode ? "hover:bg-gray-800/50" : "hover:bg-gray-50"}`}>
-                <div className="flex items-center gap-4">
-                  <div className={`p-2 rounded-xl ${darkMode ? "bg-gray-800 text-gray-400" : "bg-gray-50 text-gray-500"}`}><Bell size={18} /></div>
-                  <div>
-                    <p className={`font-semibold text-sm ${darkMode ? "text-white" : "text-gray-800"}`}>Test Notifications</p>
-                    <p className={`text-xs ${darkMode ? "text-gray-500" : "text-gray-400"}`}>Verify if alerts are working on your laptop</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => {
-                    toast.info("Sending test notification...");
-                    triggerAlert({ message: "Laptop Notification Test Success!" });
-                  }}
-                  className="px-4 py-2 bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400 rounded-lg text-xs font-bold hover:bg-violet-200 transition"
-                >
-                  Send Test
-                </button>
-              </div>
             </SectionCard>
           </div>
         )}

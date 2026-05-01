@@ -90,14 +90,14 @@ const CameraFeed = ({ cameraNames, serverUrl, darkMode }) => {
             {cameraNames.map(cam => (
               <div key={cam} className="relative">
                 <span className="absolute top-2 left-2 z-10 text-[10px] bg-black/60 text-white px-2 py-0.5 rounded-full font-mono uppercase">{cam}</span>
-                <img src={`${serverUrl}/video/${cam}?t=${Date.now()}`} alt={cam} className="w-full rounded"
-                  style={{ height: cameraNames.length === 1 ? "450px" : "220px", objectFit: "fill" }}
+                <img src={`${serverUrl}/video/${cam}?t=${Date.now()}`} alt={cam} className="w-full aspect-video rounded"
+                  style={{ objectFit: "fill" }}
                   onError={(e) => { e.target.src = "https://via.placeholder.com/640x360?text=Stream+Loading..."; }} />
               </div>
             ))}
           </div>
         ) : (
-          <div className="h-[450px] flex justify-center items-center">
+          <div className="w-full aspect-video flex justify-center items-center">
             <p className="text-white italic text-sm animate-pulse">Waiting for camera streams...</p>
           </div>
         )}
