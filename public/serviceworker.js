@@ -62,3 +62,32 @@ self.addEventListener('fetch', (event) => {
         );
     }
 });
+
+// Handle notification click
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+
+    // Default URL if not specified
+    const urlToOpen = event.notification.data?.url || '/alert';
+
+    event.waitUntil(
+        self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+            .then((windowClients) => {
+                // If a window is already open, focus it and navigate
+                for (let i = 0; i < windowClients.length; i++) {
+                    const client = windowClients[i];
+                    if ('focus' in client) {
+                        return client.focus().then(() => {
+                            if (client.url !== urlToOpen) {
+                                return client.navigate(urlToOpen);
+                            }
+                        });
+                    }
+                }
+                // If no window is open, open a new one
+                if (self.clients.openWindow) {
+                    return self.clients.openWindow(urlToOpen);
+                }
+            })
+    );
+});

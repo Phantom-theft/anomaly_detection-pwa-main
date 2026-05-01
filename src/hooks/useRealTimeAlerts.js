@@ -6,6 +6,7 @@
  * 2. playAlertSound has NO dependencies — prevents SSE reconnect loop
  * 3. connect() no longer depends on playAlertSound — stops infinite re-connections
  * 4. onAlert in connect() calls playAlertSoundRef.current — always gets latest function
+ * 5. Added Web Notification API integration
  */
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
@@ -38,17 +39,12 @@ const useRealTimeAlerts = (options = {}) => {
   const MAX_RECENT_DETECTIONS = 10;
 
   // FIX #1: Gumawa ng Audio object isang beses lang.
-  // Kung palaging ni-replace (tulad ng dati), nawawala ang browser unlock
-  // na nakuha sa click event ng user.
   useEffect(() => {
     if (!alertSoundRef.current) {
-      // Unang beses — gumawa ng bagong Audio object
       console.log('[useRealTimeAlerts] Setting sound URL to:', soundUrl);
       alertSoundRef.current = new Audio(soundUrl);
       alertSoundRef.current.preload = 'auto';
     } else {
-      // Sunod na pagbabago ng soundUrl — i-update lang ang src, HUWAG gumawa ng bago
-      // para hindi mawala ang unlock na nakuha ng user
       console.log('[useRealTimeAlerts] Updating sound URL to:', soundUrl);
       alertSoundRef.current.src = soundUrl;
       alertSoundRef.current.load();
@@ -73,8 +69,6 @@ const useRealTimeAlerts = (options = {}) => {
   useEffect(() => { onNewDetectionRef.current = onNewDetection; }, [onNewDetection]);
 
   // FIX #2: Walang dependency si playAlertSound.
-  // Dati: [soundUrl] — kaya tuwing magbago ang soundUrl, bagong function ang nalilikha,
-  // na nag-trigger ng connect() na nag-disconnect at nag-reconnect ng SSE.
   const playAlertSound = useCallback(() => {
     console.log('[useRealTimeAlerts] playAlertSound called');
     try {
@@ -96,16 +90,75 @@ const useRealTimeAlerts = (options = {}) => {
     } catch (error) {
       console.error('[useRealTimeAlerts] Error in playAlertSound:', error);
     }
-  }, []); // ← WALANG dependency — hindi na mag-re-create, hindi na mag-re-connect ang SSE
+  }, []);
 
   // FIX #3: I-sync ang ref sa pinakabagong version ng playAlertSound
-  // para ma-access ito ng connect() nang hindi siya nasa dependency array
   useEffect(() => {
     playAlertSoundRef.current = playAlertSound;
   }, [playAlertSound]);
 
+  // Notification logic
+  const requestNotificationPermission = useCallback(async () => {
+    if (!("Notification" in window)) {
+      console.warn("This browser does not support notifications");
+      return false;
+    }
+    
+    if (Notification.permission === "granted") {
+      return true;
+    }
+
+    if (Notification.permission !== "denied") {
+      const permission = await Notification.requestPermission();
+      return permission === "granted";
+    }
+    
+    return false;
+  }, []);
+
+  const showNotification = useCallback((data) => {
+    console.log('[useRealTimeAlerts] showNotification called with permission:', Notification.permission);
+    if (Notification.permission !== "granted") {
+      console.warn('[useRealTimeAlerts] Notification permission not granted. Current state:', Notification.permission);
+      return;
+    }
+
+    const title = `Alert: ${data.camera_name || 'System'}`;
+    const options = {
+      body: data.message || `New ${data.type || 'anomaly'} detected!`,
+      icon: '/icons/192x192.png',
+      badge: '/icons/96x96.png',
+      vibrate: [200, 100, 200],
+      tag: 'anomaly-alert',
+      renotify: true,
+      data: {
+        url: '/alert'
+      }
+    };
+
+    if ('serviceWorker' in navigator && navigator.serviceWorker.ready) {
+      console.log('[useRealTimeAlerts] Using Service Worker to show notification');
+      navigator.serviceWorker.ready.then(registration => {
+        registration.showNotification(title, options)
+          .then(() => console.log('[useRealTimeAlerts] registration.showNotification success'))
+          .catch(err => console.error('[useRealTimeAlerts] registration.showNotification error:', err));
+      });
+    } else {
+      console.log('[useRealTimeAlerts] Service Worker not ready, using window Notification');
+      try {
+        new Notification(title, options);
+      } catch (e) {
+        console.error("[useRealTimeAlerts] Error showing window notification:", e);
+      }
+    }
+  }, []);
+
+  const showNotificationRef = useRef(showNotification);
+  useEffect(() => {
+    showNotificationRef.current = showNotification;
+  }, [showNotification]);
+
   // FIX #4: connect() ay HINDI na naka-depend sa playAlertSound
-  // Ginagamit nito si playAlertSoundRef.current sa loob ng callbacks
   const connect = useCallback(() => {
     if (!isSSESupported()) {
       console.warn('[useRealTimeAlerts] SSE is not supported in this browser');
@@ -130,11 +183,10 @@ const useRealTimeAlerts = (options = {}) => {
           onNewAlertRef.current(data, timestamp);
         }
 
-        // FIX: Gamitin ang ref — hindi direktang playAlertSound
-        // para hindi kailangang kasama sa dependency array ng connect()
         if (data?.type !== 'heartbeat') {
-          console.log('[useRealTimeAlerts] Calling playAlertSound via ref...');
+          console.log('[useRealTimeAlerts] Calling playAlertSound and showNotification via refs...');
           playAlertSoundRef.current?.();
+          showNotificationRef.current?.(data);
         }
       },
       onCameraStatus: (data, timestamp) => {
@@ -169,7 +221,6 @@ const useRealTimeAlerts = (options = {}) => {
     });
 
     connectionRef.current = connection;
-  // FIX: playAlertSound ay WALA na dito — hindi na mag-re-trigger ng reconnect
   }, [events, role, orgId]);
 
   const disconnect = useCallback(() => {
@@ -183,14 +234,19 @@ const useRealTimeAlerts = (options = {}) => {
   const triggerAlert = useCallback((alertData) => {
     const testAlert = {
       type: 'test_alert',
-      camera_name: alertData.camera_name || 'test_camera',
+      camera_name: alertData.camera_name || 'Test Camera',
+      message: alertData.message || 'This is a test notification from Anomaly App.',
       timestamp: Date.now(),
       ...alertData
     };
+    
     setLastAlert(testAlert);
     if (onNewAlertRef.current) {
       onNewAlertRef.current(testAlert, Date.now());
     }
+    
+    playAlertSoundRef.current?.();
+    showNotificationRef.current?.(testAlert);
   }, []);
 
   const clearDetections = useCallback(() => {
@@ -223,7 +279,8 @@ const useRealTimeAlerts = (options = {}) => {
     disconnect,
     triggerAlert,
     clearDetections,
-    playAlertSound
+    playAlertSound,
+    requestNotificationPermission
   };
 };
 
