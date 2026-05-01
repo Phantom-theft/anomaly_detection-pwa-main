@@ -463,6 +463,15 @@ export default function Dashboard() {
   const formattedTime = time.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
   const formattedDate = time.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 
+  const newAlertsCount = alerts.filter(alert => {
+    if (alert.timestamp === "Just Now" || alert.timestamp === "Live") return true;
+    if (alert.created_at && typeof alert.created_at.toDate === 'function') {
+      const diff = (new Date() - alert.created_at.toDate()) / 1000 / 60;
+      return diff <= 10;
+    }
+    return false;
+  }).length;
+
   return (
     <div className={`p-6 min-h-screen transition-colors duration-300 ${darkMode ? "bg-gray-950" : "bg-gray-50"}`}>
       <div className="flex justify-between items-center mb-6">
@@ -500,7 +509,7 @@ export default function Dashboard() {
               <div className="flex items-center gap-2">
                 <IconExclamation className="text-orange-500" /> Recent Alerts
               </div>
-              <span className={`text-xs px-2 py-1 rounded-full ${darkMode ? "bg-gray-800 text-gray-500" : "bg-gray-100 text-gray-500"}`}>{alerts.length} Total</span>
+              <span className={`text-xs px-2 py-1 rounded-full ${darkMode ? "bg-gray-800 text-gray-500" : "bg-gray-100 text-gray-500"}`}>{newAlertsCount} New</span>
             </h2>
             <div className="flex-1 overflow-y-auto pr-1">
               {alerts.length === 0 ? (
