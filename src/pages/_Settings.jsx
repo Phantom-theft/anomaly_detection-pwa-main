@@ -286,6 +286,10 @@ export default function Settings() {
   const [loadingBinRecordings, setLoadingBinRecordings] = useState(false);
   const [binRecordedCameras, setBinRecordedCameras] = useState([]);
 
+  // Selection states for multi-select in Recycle Bin
+  const [selectedAlertIds, setSelectedAlertIds] = useState([]);
+  const [selectedRecordingFiles, setSelectedRecordingFiles] = useState([]);
+
   const currentUser = auth.currentUser;
 
   // 🚨 UNIFIED CONFIRM MODAL STATE
@@ -454,16 +458,57 @@ export default function Settings() {
     setIsConfirming(true);
 
     try {
-      if (type === "restore_alert") {
+      // ── AI ALERT BULK ACTIONS ──
+      if (type === "restore_alert_bulk") {
+        const batch = item.map(id => updateDoc(doc(db, "detections", id), { is_deleted: false }));
+        await Promise.all(batch);
+        toast.success(`${item.length} alerts restored!`);
+        setSelectedAlertIds([]);
+      }
+      else if (type === "delete_alert_bulk") {
+        const batch = item.map(id => deleteDoc(doc(db, "detections", id)));
+        await Promise.all(batch);
+        toast.success(`${item.length} alerts permanently deleted.`);
+        setSelectedAlertIds([]);
+      }
+
+      // ── RAW RECORDING BULK ACTIONS ──
+      else if (type === "restore_raw_bulk" || type === "delete_raw_bulk") {
+        const isRestore = type === "restore_raw_bulk";
+        const endpoint = isRestore ? "/restore_raw_record" : "/permanent_delete_raw_record";
+        
+        // Loop through all selected files
+        let successCount = 0;
+        for (const file of item) {
+          try {
+            const res = await fetch(`${SERVER_URL}${endpoint}`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "ngrok-skip-browser-warning": "69420" },
+              body: JSON.stringify({
+                camera: binReplayCamera,
+                date: binReplayDate,
+                file: file,
+                org_id: orgId
+              })
+            });
+            if (res.ok) successCount++;
+          } catch (e) { console.error(`Failed ${file}:`, e); }
+        }
+
+        toast.success(`${successCount} recordings ${isRestore ? "restored" : "permanently deleted"}.`);
+        setBinRecordings(prev => prev.filter(f => !item.includes(f)));
+        setSelectedRecordingFiles([]);
+      }
+
+      // ── SINGLE ACTIONS (EXISTING) ──
+      else if (type === "restore_alert") {
         await updateDoc(doc(db, "detections", item), { is_deleted: false });
         toast.success("Alert restored successfully!");
       } 
-      
       else if (type === "delete_alert") {
         await deleteDoc(doc(db, "detections", item));
         toast.success("Alert permanently deleted.");
       } 
-      
       else if (type === "restore_raw" || type === "delete_raw") {
         // Release Windows File Lock by clearing the video player first!
         if (binSelectedVideo === item) {
@@ -474,10 +519,7 @@ export default function Settings() {
         const endpoint = type === "restore_raw" ? "/restore_raw_record" : "/permanent_delete_raw_record";
         const res = await fetch(`${SERVER_URL}${endpoint}`, {
           method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "69420"
-          },
+          headers: { "Content-Type": "application/json", "ngrok-skip-browser-warning": "69420" },
           body: JSON.stringify({
             camera: binReplayCamera,
             date: binReplayDate,
@@ -489,6 +531,8 @@ export default function Settings() {
         if (res.ok) {
           toast.success(type === "restore_raw" ? "Recording restored to Dashboard" : "Recording permanently deleted");
           setBinRecordings(prev => prev.filter(f => f !== item));
+          // Clean up selection if needed
+          setSelectedRecordingFiles(prev => prev.filter(f => f !== item));
         } else {
           const errData = await res.json();
           toast.error(errData.error || "Action failed");
@@ -511,26 +555,38 @@ export default function Settings() {
 
   switch (confirmModalState.type) {
     case "restore_alert":
+    case "restore_alert_bulk":
       modalTitle = "Restore Alert Log?";
-      modalMessage = "This alert will be returned to your active Dashboard and Alert Logs.";
+      modalMessage = confirmModalState.type.includes("bulk") 
+        ? `Are you sure you want to restore ${confirmModalState.item?.length} selected alerts?`
+        : "This alert will be returned to your active Dashboard and Alert Logs.";
       confirmText = "Restore Alert";
       isDanger = false;
       break;
     case "delete_alert":
+    case "delete_alert_bulk":
       modalTitle = "Permanently Delete Alert?";
-      modalMessage = "This will permanently remove the alert from the cloud. This action cannot be undone.";
+      modalMessage = confirmModalState.type.includes("bulk")
+        ? `Are you sure you want to permanently delete ${confirmModalState.item?.length} selected alerts? This cannot be undone.`
+        : "This will permanently remove the alert from the cloud. This action cannot be undone.";
       confirmText = "Delete Permanently";
       isDanger = true;
       break;
     case "restore_raw":
+    case "restore_raw_bulk":
       modalTitle = "Restore Raw Recording?";
-      modalMessage = "This video will be moved back to the main storage and will be visible on the Dashboard again.";
+      modalMessage = confirmModalState.type.includes("bulk")
+        ? `Restore ${confirmModalState.item?.length} selected videos back to the Dashboard?`
+        : "This video will be moved back to the main storage and will be visible on the Dashboard again.";
       confirmText = "Restore Video";
       isDanger = false;
       break;
     case "delete_raw":
+    case "delete_raw_bulk":
       modalTitle = "Permanently Delete Recording?";
-      modalMessage = "This video will be permanently deleted from the hard drive. This action cannot be undone.";
+      modalMessage = confirmModalState.type.includes("bulk")
+        ? `Permanently delete ${confirmModalState.item?.length} selected videos from the hard drive? This cannot be undone.`
+        : "This video will be permanently deleted from the hard drive. This action cannot be undone.";
       confirmText = "Delete Permanently";
       isDanger = true;
       break;
@@ -548,9 +604,7 @@ export default function Settings() {
 
   const detectionItems = [
     { key: "loitering_still", label: "Loitering (Still)",   desc: "Alert when a person stands still for too long." },
-    { key: "loitering_area",  label: "Loitering (Area)",    desc: "Alert when a person stays in a small area." },
     { key: "pacing",          label: "Pacing",              desc: "Detect repetitive back-and-forth movement." },
-    { key: "scanning",        label: "Suspicious Scanning", desc: "Detect suspicious head scanning behavior." },
     { key: "stealing",        label: "Stealing",            desc: "Monitor for suspicious item handling." },
   ];
 
@@ -716,6 +770,41 @@ export default function Settings() {
             {binTab === "alerts" && (
               <SectionCard title="Deleted Alert Logs" icon={<Trash2 size={16} />} darkMode={darkMode}>
                 <div className="p-4">
+                  {/* Select All & Delete All Header */}
+                  {binAlerts.length > 0 && (
+                    <div className={`flex items-center justify-between mb-4 pb-2 border-b ${darkMode ? "border-gray-800" : "border-gray-100"}`}>
+                      <div className="flex items-center gap-2">
+                        <input 
+                          type="checkbox" 
+                          checked={binAlerts.length > 0 && selectedAlertIds.length === binAlerts.length}
+                          onChange={(e) => {
+                            if (e.target.checked) setSelectedAlertIds(binAlerts.map(a => a.id));
+                            else setSelectedAlertIds([]);
+                          }}
+                          className="w-4 h-4 rounded border-gray-300 text-violet-600 focus:ring-violet-500 cursor-pointer"
+                        />
+                        <span className={`text-xs font-bold ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Select All</span>
+                      </div>
+                      
+                      {selectedAlertIds.length > 0 && (
+                        <div className="flex items-center gap-2">
+                          <button 
+                            onClick={(e) => openConfirmModal(e, "restore_alert_bulk", selectedAlertIds)}
+                            className="text-xs font-bold text-green-600 hover:underline px-2 py-1"
+                          >
+                            Restore ({selectedAlertIds.length})
+                          </button>
+                          <button 
+                            onClick={(e) => openConfirmModal(e, "delete_alert_bulk", selectedAlertIds)}
+                            className="text-xs font-bold text-red-500 hover:underline px-2 py-1"
+                          >
+                            Delete Selected
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {loadingBin ? (
                     <p className="text-center text-sm py-8 text-gray-500">Loading deleted logs...</p>
                   ) : binAlerts.length === 0 ? (
@@ -728,6 +817,17 @@ export default function Settings() {
                       {binAlerts.map(alert => (
                         <div key={alert.id} className={`flex items-center justify-between p-4 rounded-2xl border ${darkMode ? 'border-gray-800 bg-gray-900/50' : 'border-gray-100 bg-gray-50/50'}`}>
                           <div className="flex items-center gap-4">
+                            <input 
+                              type="checkbox" 
+                              checked={selectedAlertIds.includes(alert.id)}
+                              onChange={(e) => {
+                                e.stopPropagation();
+                                setSelectedAlertIds(prev => 
+                                  prev.includes(alert.id) ? prev.filter(id => id !== alert.id) : [...prev, alert.id]
+                                );
+                              }}
+                              className="w-4 h-4 rounded border-gray-300 text-violet-600 focus:ring-violet-500 cursor-pointer"
+                            />
                             <div className={`p-3 rounded-xl ${darkMode ? 'bg-gray-800 text-gray-400' : 'bg-white border text-gray-500'}`}>
                               <Video size={18} />
                             </div>
@@ -800,6 +900,41 @@ export default function Settings() {
 
                     {/* List */}
                     <div className={`h-[250px] overflow-y-auto pr-2 rounded-lg border ${darkMode ? "border-gray-800 bg-gray-950/30" : "border-gray-200 bg-gray-50"} p-2`}>
+                      {/* Select All & Bulk Actions for Raw */}
+                      {binRecordings.length > 0 && (
+                        <div className={`flex items-center justify-between mb-2 pb-1 border-b ${darkMode ? "border-gray-800" : "border-gray-100"}`}>
+                          <div className="flex items-center gap-2">
+                            <input 
+                              type="checkbox" 
+                              checked={binRecordings.length > 0 && selectedRecordingFiles.length === binRecordings.length}
+                              onChange={(e) => {
+                                if (e.target.checked) setSelectedRecordingFiles([...binRecordings]);
+                                else setSelectedRecordingFiles([]);
+                              }}
+                              className="w-3.5 h-3.5 rounded border-gray-300 text-violet-600 focus:ring-violet-500 cursor-pointer"
+                            />
+                            <span className={`text-[10px] font-bold ${darkMode ? "text-gray-500" : "text-gray-400"}`}>Select All</span>
+                          </div>
+                          
+                          {selectedRecordingFiles.length > 0 && (
+                            <div className="flex items-center gap-1">
+                              <button 
+                                onClick={(e) => openConfirmModal(e, "restore_raw_bulk", selectedRecordingFiles)}
+                                className="text-[10px] font-black text-green-600 hover:underline"
+                              >
+                                Restore
+                              </button>
+                              <button 
+                                onClick={(e) => openConfirmModal(e, "delete_raw_bulk", selectedRecordingFiles)}
+                                className="text-[10px] font-black text-red-500 hover:underline"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
                       {loadingBinRecordings ? (
                         <p className="text-sm text-gray-500 p-4 text-center">Searching Archived Storage...</p>
                       ) : binRecordings.length === 0 ? (
@@ -815,11 +950,24 @@ export default function Settings() {
                                   : "bg-white border-gray-200 text-gray-700 hover:bg-gray-100"
                             }`}>
                               
-                              {/* Selection Button */}
-                              <button onClick={() => setBinSelectedVideo(file)} className="flex items-center flex-1 text-left overflow-hidden outline-none">
-                                <span className="text-sm mr-2">{binSelectedVideo === file ? "▶" : "🎞️"}</span>
-                                <span className="text-xs font-bold truncate">{file}</span>
-                              </button>
+                              <div className="flex items-center gap-2 flex-1 overflow-hidden">
+                                <input 
+                                  type="checkbox" 
+                                  checked={selectedRecordingFiles.includes(file)}
+                                  onChange={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedRecordingFiles(prev => 
+                                      prev.includes(file) ? prev.filter(f => f !== file) : [...prev, file]
+                                    );
+                                  }}
+                                  className="w-3.5 h-3.5 rounded border-gray-300 text-violet-600 focus:ring-violet-500 cursor-pointer flex-shrink-0"
+                                />
+                                {/* Selection Button */}
+                                <button onClick={() => setBinSelectedVideo(file)} className="flex items-center flex-1 text-left overflow-hidden outline-none">
+                                  <span className="text-sm mr-2">{binSelectedVideo === file ? "▶" : "🎞️"}</span>
+                                  <span className="text-xs font-bold truncate">{file}</span>
+                                </button>
+                              </div>
 
                               {/* 🚨 MODAL TRIGGERS PARA SA RAW RECORDINGS */}
                               <div className="flex items-center gap-1 mr-1">
@@ -866,7 +1014,7 @@ export default function Settings() {
                   <h4 className={`font-bold text-sm mb-2 ${darkMode ? "text-blue-400" : "text-blue-700"}`}>🚨 Understanding Alerts</h4>
                   <ul className="text-xs space-y-2 opacity-80">
                     <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> <strong>Loitering</strong> — Person standing still or pacing too long.</li>
-                    <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-pink-500"></span> <strong>Head Scanning</strong> — Suspicious head movement patterns.</li>
+                    <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-pink-500"></span> <strong>Pacing</strong> — Detect repetitive back-and-forth movement in a specific area.</li>
                     <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-red-500"></span> <strong>Stealing</strong> — AI detected suspicious item handling.</li>
                   </ul>
                 </div>
