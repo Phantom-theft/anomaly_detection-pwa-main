@@ -32,6 +32,9 @@ const AlertLogsPage = () => {
   const { user, organization: orgId } = useAuth();
   const [error, setError] = useState(null);
 
+  // New state for multi-selection
+  const [selectedAlertIds, setSelectedAlertIds] = useState([]);
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [alertToDelete, setAlertToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -109,20 +112,35 @@ const AlertLogsPage = () => {
   };
 
   const handleDelete = async () => {
-    if (!user || !alertToDelete) return;
+    if (!user) return;
+    
+    // Determine what to delete: single item or bulk selection
+    const idsToDelete = alertToDelete ? [alertToDelete.id] : selectedAlertIds;
+    if (idsToDelete.length === 0) return;
+
     setIsDeleting(true);
 
     try {
-      // SOFT DELETE LOGIC
-      await updateDoc(doc(db, "detections", alertToDelete.id), {
-        is_deleted: true
-      });
-      toast.success("Alert moved to Settings > Recycle Bin");
+      // SOFT DELETE LOGIC - Process all IDs in parallel
+      const batch = idsToDelete.map(id => 
+        updateDoc(doc(db, "detections", id), { is_deleted: true })
+      );
+      
+      await Promise.all(batch);
+      
+      toast.success(idsToDelete.length > 1 
+        ? `${idsToDelete.length} alerts moved to Recycle Bin` 
+        : "Alert moved to Settings > Recycle Bin"
+      );
+      
+      setSelectedAlertIds([]); // Clear selection after successful bulk delete
     } catch (err) {
       console.error("Delete failed:", err);
-      toast.error("Failed to delete alert.");
+      toast.error("Failed to delete alert(s).");
     } finally {
-      setIsDeleting(false); setIsDeleteModalOpen(false); setAlertToDelete(null);
+      setIsDeleting(false); 
+      setIsDeleteModalOpen(false); 
+      setAlertToDelete(null);
     }
   };
 
@@ -173,6 +191,34 @@ const AlertLogsPage = () => {
         )}
 
         <div className={`rounded-[2.5rem] shadow-sm border overflow-hidden min-h-[60vh] ${darkMode ? "bg-gray-900 border-gray-800" : "bg-white border-gray-100"}`}>
+          {/* Multi-Select Header */}
+          {alerts.length > 0 && (
+            <div className={`px-8 py-4 border-b flex items-center justify-between ${darkMode ? "bg-gray-800/30 border-gray-800" : "bg-gray-50 border-gray-100"}`}>
+              <div className="flex items-center gap-3">
+                <input 
+                  type="checkbox" 
+                  checked={alerts.length > 0 && selectedAlertIds.length === alerts.length}
+                  onChange={(e) => {
+                    if (e.target.checked) setSelectedAlertIds(alerts.map(a => a.id));
+                    else setSelectedAlertIds([]);
+                  }}
+                  className="w-5 h-5 rounded border-gray-300 text-violet-600 focus:ring-violet-500 cursor-pointer"
+                />
+                <span className={`text-sm font-bold ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Select All</span>
+              </div>
+              
+              {selectedAlertIds.length > 0 && (
+                <button 
+                  onClick={() => setIsDeleteModalOpen(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-red-500/20 active:scale-95"
+                >
+                  <Trash2 size={14} />
+                  Delete Selected ({selectedAlertIds.length})
+                </button>
+              )}
+            </div>
+          )}
+
           <div className="h-[75vh] overflow-y-auto p-4 custom-scrollbar">
             {loading && !error ? (
               <div className="flex flex-col items-center justify-center h-full text-gray-400">
@@ -192,6 +238,20 @@ const AlertLogsPage = () => {
 
                   return (
                     <div key={alert.id} className={`flex flex-col md:flex-row items-center gap-6 p-8 border ${border} rounded-[2rem] transition-all hover:shadow-md ${darkMode ? "bg-gray-800/50" : "bg-white"}`}>
+                      {/* Selection Checkbox */}
+                      <div className="flex items-center justify-center">
+                        <input 
+                          type="checkbox" 
+                          checked={selectedAlertIds.includes(alert.id)}
+                          onChange={(e) => {
+                            setSelectedAlertIds(prev => 
+                              prev.includes(alert.id) ? prev.filter(id => id !== alert.id) : [...prev, alert.id]
+                            );
+                          }}
+                          className="w-6 h-6 rounded-lg border-gray-300 text-violet-600 focus:ring-violet-500 cursor-pointer transition-all"
+                        />
+                      </div>
+
                       <div className="flex-1 space-y-3">
                         <div className="flex items-center gap-3">
                           <div className={`p-2.5 rounded-xl ${bg}`}>{icon}</div>
