@@ -322,13 +322,29 @@ export default function Dashboard() {
   const { user: currentUser, organization: actualOrgId } = useAuth();
   const navigate = useNavigate();
   const [time, setTime]               = useState(new Date());
-  const [isMuted, setIsMuted]         = useState(true);
+
+  // Persist mute state across page changes
+  const [isMuted, setIsMuted]         = useState(() => {
+    const saved = localStorage.getItem("dashboard_muted");
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+
   const [alerts, setAlerts]           = useState([]);
   const [cameraNames, setCameraNames] = useState([]);
   const [orgSoundUrl, setOrgSoundUrl] = useState("/alert.mp3");
+
   const isMutedRef                    = useRef(true);
 
+  const handleRefresh = () => {
+    window.location.reload();
+  };
+
   const playAlertSoundRef = useRef(null);
+
+  // Sync isMutedRef with isMuted state
+  useEffect(() => {
+    isMutedRef.current = isMuted;
+  }, [isMuted]);
 
   // 1. Fetch Organization Sound Configuration
   useEffect(() => {
@@ -454,6 +470,7 @@ export default function Dashboard() {
     const m = !isMuted;
     setIsMuted(m);
     isMutedRef.current = m;
+    localStorage.setItem("dashboard_muted", JSON.stringify(m));
 
     if (!m) {
       playAlertSound();
