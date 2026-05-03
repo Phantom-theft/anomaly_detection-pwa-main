@@ -443,7 +443,7 @@ export default function Dashboard() {
           type: docData.type || docData.action || "Detection",
           video_url: docData.video_url || docData.clipUrl || null
         };
-      });
+      }).filter(alert => !alert.is_deleted);
       setAlerts(logs);
     });
 
