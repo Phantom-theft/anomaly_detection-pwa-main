@@ -2,12 +2,31 @@
 import React, { useEffect, useState } from "react";
 import { 
   getAllUsers, createUserEntry, updateUserEntry, deleteUserEntry, 
-  sendAdminVerificationCode, verifyAdminCode 
+  sendAdminVerificationCode, verifyAdminCode, db
 } from "../../firebase/config";
 import { FaUserGroup, FaEnvelope, FaPen, FaTrash, FaPlus, FaXmark } from "react-icons/fa6";
+import { CheckCheck, Eye, EyeOff, X } from 'lucide-react';
 import { toast } from "react-toastify";
 import useAuthStatus from "../../hooks/useAuthStatus"; 
-import { db } from "../../firebase/config";
+
+// --- PASSWORD POLICY DESIGN CONSTANTS ---
+const PASSWORD_REQUIREMENTS = [
+  { regex: /.{8,}/, text: 'At least 8 characters' },
+  { regex: /[0-9]/, text: 'At least 1 number' },
+  { regex: /[a-z]/, text: 'At least 1 lowercase letter' },
+  { regex: /[A-Z]/, text: 'At least 1 uppercase letter' },
+  { regex: /[!-/:-@[-`{-~]/, text: 'At least 1 special character' },
+];
+
+const STRENGTH_TEXTS = {
+  0: 'Enter a password',
+  1: 'Weak password',
+  2: 'Medium password!',
+  3: 'Strong password!!',
+  4: 'Very Strong password!!!',
+  5: 'Perfect password!!!!',
+};
+
 import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import ConfirmModal from "../../components/ConfirmModal";
 
@@ -83,6 +102,53 @@ const SystemUsers = () => {
       password: "", 
       role: "user" 
   });
+
+  const [otp, setOtp] = useState(Array(6).fill(""));
+
+  useEffect(() => {
+    setCode(otp.join(""));
+  }, [otp]);
+
+  const handleOtpChange = (value, index) => {
+    if (isNaN(value)) return;
+    const newOtp = [...otp];
+    newOtp[index] = value.substring(value.length - 1);
+    setOtp(newOtp);
+
+    if (value && index < 5) {
+      const nextInput = document.getElementById(`otp-${index + 1}`);
+      if (nextInput) nextInput.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (e, index) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      const prevInput = document.getElementById(`otp-${index - 1}`);
+      if (prevInput) prevInput.focus();
+    }
+  };
+
+  const handleOtpPaste = (e) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text").slice(0, 6).split("");
+    if (pastedData.length === 6 && pastedData.every(char => !isNaN(char))) {
+      setOtp(pastedData);
+    }
+  };
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const calculateStrength = React.useMemo(() => {
+    const requirements = PASSWORD_REQUIREMENTS.map((req) => ({
+      met: req.regex.test(formData.password),
+      text: req.text,
+    }));
+
+    return {
+      score: requirements.filter((req) => req.met).length,
+      requirements,
+    };
+  }, [formData.password]);
 
   // NA-UPDATE NA REFRESH USERS PARA SA SECURITY
   const refreshUsers = async () => {
@@ -416,19 +482,62 @@ const SystemUsers = () => {
                         <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">
                             Temporary Password
                         </label>
-                        <input
-                            required={currentAction === "add"}
-                            type="text"
-                            placeholder={currentAction === "edit" ? "Leave blank to keep current" : ""}
-                            className="w-full border-2 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 dark:focus:border-violet-400 transition-all"
-                            value={formData.password}
-                            onChange={(e) =>
-                                setFormData({ ...formData, password: e.target.value })
-                            }
-                        />
-                        <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 uppercase font-bold">
-                            Must be at least 6 characters
+                        <div className="relative">
+                            <input
+                                required={currentAction === "add"}
+                                type={showPassword ? "text" : "password"}
+                                placeholder={currentAction === "edit" ? "Leave blank to keep current" : ""}
+                                className="w-full border-2 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 dark:focus:border-violet-400 transition-all pr-12"
+                                value={formData.password}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, password: e.target.value })
+                                }
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-violet-500 transition-colors mt-0.5"
+                            >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                        </div>
+
+                        {/* STRENGTH BARS */}
+                        <div className='flex gap-1.5 w-full justify-between mt-3'>
+                            {[1, 2, 3, 4, 5].map((level) => (
+                                <span
+                                    key={level}
+                                    className={`h-1.5 rounded-full w-full transition-colors duration-500 ${
+                                        calculateStrength.score >= level 
+                                            ? (calculateStrength.score <= 2 ? 'bg-red-400' : calculateStrength.score <= 4 ? 'bg-orange-400' : 'bg-emerald-500') 
+                                            : 'bg-gray-100 dark:bg-gray-800'
+                                    }`}
+                                ></span>
+                            ))}
+                        </div>
+
+                        <p className='my-2 text-[10px] font-bold uppercase flex justify-between'>
+                            <span className="text-gray-400">Must contain:</span>
+                            <span className={calculateStrength.score >= 4 ? 'text-emerald-500' : 'text-orange-500'}>
+                                {STRENGTH_TEXTS[calculateStrength.score]}
+                            </span>
                         </p>
+
+                        {/* REQUIREMENTS CHECKLIST */}
+                        <ul className='space-y-1.5 mt-2'>
+                            {calculateStrength.requirements.map((req) => (
+                                <li key={req.text} className='flex items-center space-x-2'>
+                                    {req.met ? (
+                                        <CheckCheck size={14} className='text-emerald-500' />
+                                    ) : (
+                                        <X size={14} className='text-gray-300 dark:text-gray-600' />
+                                    )}
+                                    <span className={`text-[10px] font-bold uppercase ${req.met ? 'text-emerald-600' : 'text-gray-400'}`}>
+                                        {req.text}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
 
                     {/* SHOW VERIFICATION FOR BOTH ADD AND EDIT */}
@@ -451,21 +560,49 @@ const SystemUsers = () => {
                     </div>
 
                     {codeSent && (
-                        <div>
-                            <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Verification Code</label>
-                            <input
-                                type="text"
-                                required
-                                className="w-full border-2 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 dark:focus:border-violet-400 transition-all"
-                                value={code}
-                                onChange={(e) => setCode(e.target.value)}
-                            />
+                        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500 mt-2">
+                            <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+                                Verification Code
+                            </label>
+                            
+                            <div className="flex items-center justify-between gap-2">
+                                {[0, 1, 2, 3, 4, 5].map((index) => (
+                                    <React.Fragment key={index}>
+                                        <input
+                                            id={`otp-${index}`}
+                                            type="text"
+                                            maxLength={1}
+                                            value={otp[index]}
+                                            onChange={(e) => handleOtpChange(e.target.value, index)}
+                                            onKeyDown={(e) => handleOtpKeyDown(e, index)}
+                                            onPaste={handleOtpPaste}
+                                            className={`w-10 h-12 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-2xl border-2 transition-all outline-none focus:ring-4 focus:ring-violet-500/10 ${
+                                                otp[index] 
+                                                    ? "border-violet-500 bg-violet-50/30 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400" 
+                                                    : "border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900 text-gray-800 dark:text-white focus:border-violet-500 shadow-sm"
+                                            }`}
+                                        />
+                                        {index === 2 && <span className="text-gray-300 dark:text-gray-600 font-bold px-1">-</span>}
+                                    </React.Fragment>
+                                ))}
+                            </div>
 
-                            {codeExpiry <= 0 && (
-                                <p className="text-xs text-red-500 mt-1">
-                                    Verification code expired. Please resend.
+                            <div className="flex justify-between items-center px-1">
+                                <p className={`text-[10px] font-bold uppercase tracking-tight ${codeExpiry <= 0 ? "text-red-500" : "text-gray-400"}`}>
+                                    {codeExpiry <= 0 ? "Code Expired" : `Expires in ${codeExpiry}s`}
                                 </p>
-                            )}
+                                <button 
+                                    type="button" 
+                                    onClick={() => {
+                                        handleSendCode();
+                                        setOtp(Array(6).fill(""));
+                                    }}
+                                    disabled={codeLoading || codeExpiry > 0}
+                                    className="text-[10px] font-black uppercase text-violet-600 hover:text-violet-700 disabled:opacity-30 transition-all hover:underline"
+                                >
+                                    Resend New Code
+                                </button>
+                            </div>
                         </div>
                     )}
 
