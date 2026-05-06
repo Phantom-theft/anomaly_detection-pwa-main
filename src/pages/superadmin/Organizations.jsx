@@ -372,6 +372,11 @@ const Organizations = () => {
                     {currentAction === "add" && (
                         <>
                             <div>
+                                <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Temporary Admin Password</label>
+                                <input required type="text" className="w-full border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 text-gray-800 dark:text-white transition-all" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
+                            </div>
+
+                            <div>
                                 <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Email Verification</label>
                                 <div className="flex gap-2 mt-1">
                                     <button type="button" onClick={handleSendCode} disabled={codeLoading || codeExpiry > 0} className="px-4 py-2 rounded-xl bg-violet-500 text-white font-bold disabled:opacity-50">
@@ -387,11 +392,6 @@ const Organizations = () => {
                                 {codeExpiry <= 0 && <p className="text-xs text-red-500 mt-1">Verification code expired. Please resend.</p>}
                             </div>
                             )}
-
-                            <div>
-                                <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Temporary Admin Password</label>
-                                <input required type="text" className="w-full border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 text-gray-800 dark:text-white transition-all" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
-                            </div>
                         </>
                     )}
 

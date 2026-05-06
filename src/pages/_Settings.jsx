@@ -600,7 +600,7 @@ export default function Settings() {
     { key: "account",     label: "Account",     icon: <User size={16} /> },
     { key: "bin",         label: "Recycle Bin", icon: <Trash2 size={16} /> },
     { key: "help",        label: "Help",        icon: <BookOpen size={16} /> },
-  ];
+  ].filter(tab => !(tab.key === 'bin' && role === 'admin'));
 
   const detectionItems = [
     { key: "loitering_still", label: "Loitering (Still)",   desc: "Alert when a person stands still for too long." },
@@ -650,13 +650,15 @@ export default function Settings() {
                 desc="Switch between light and dark theme"
                 action={<Toggle enabled={darkMode} onChange={handleToggleDark} />}
               />
-              <SettingRow
-                darkMode={darkMode}
-                icon={<Bell size={18} className="text-violet-500" />}
-                title="System Notifications"
-                desc="Receive alerts even when the app is in the background"
-                action={<Toggle enabled={notificationsEnabled} onChange={handleToggleNotifications} />}
-              />
+              {role !== 'admin' && (
+                <SettingRow
+                  darkMode={darkMode}
+                  icon={<Bell size={18} className="text-violet-500" />}
+                  title="System Notifications"
+                  desc="Receive alerts even when the app is in the background"
+                  action={<Toggle enabled={notificationsEnabled} onChange={handleToggleNotifications} />}
+                />
+              )}
             </SectionCard>
           </div>
         )}

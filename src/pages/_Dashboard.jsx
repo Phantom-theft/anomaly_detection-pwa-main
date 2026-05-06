@@ -108,6 +108,7 @@ const CameraFeed = ({ cameraNames, serverUrl, darkMode }) => {
 
 // 2. COMPONENT PARA SA SAVED RECORDINGS
 const RecordingsArchive = ({ serverUrl, orgId, darkMode }) => {
+  const { role } = useAuth();
   const [replayDate, setReplayDate] = useState(new Date().toISOString().split("T")[0]);
   const [replayCamera, setReplayCamera] = useState("");
   const [recordings, setRecordings] = useState([]);
@@ -282,13 +283,15 @@ const RecordingsArchive = ({ serverUrl, orgId, darkMode }) => {
                     </button>
                     
                     {/* Trash Bin Button - Triggers Modal */}
-                    <button 
-                      onClick={(e) => confirmDelete(e, file)} 
-                      className={`p-2 rounded-md transition-colors ${selectedVideo === file ? "text-violet-200 hover:text-white hover:bg-violet-700" : "text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30"}`}
-                      title="Move to Recycle Bin"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                    {role !== 'admin' && (
+                      <button 
+                        onClick={(e) => confirmDelete(e, file)} 
+                        className={`p-2 rounded-md transition-colors ${selectedVideo === file ? "text-violet-200 hover:text-white hover:bg-violet-700" : "text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30"}`}
+                        title="Move to Recycle Bin"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>

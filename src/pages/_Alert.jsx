@@ -29,7 +29,7 @@ const AlertLogsPage = () => {
   const darkMode = theme === 'dark';
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user, organization: orgId } = useAuth();
+  const { user, organization: orgId, role } = useAuth();
   const [error, setError] = useState(null);
 
   // New state for multi-selection
@@ -207,7 +207,7 @@ const AlertLogsPage = () => {
                 <span className={`text-sm font-bold ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Select All</span>
               </div>
               
-              {selectedAlertIds.length > 0 && (
+              {selectedAlertIds.length > 0 && role !== 'admin' && (
                 <button 
                   onClick={() => setIsDeleteModalOpen(true)}
                   className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-red-500/20 active:scale-95"
@@ -295,18 +295,20 @@ const AlertLogsPage = () => {
                           </div>
                         )}
                       </div>
-                      <div className="flex items-center">
-                        <button 
-                          onClick={() => confirmDelete(alert)} 
-                          className={`p-4 transition-all duration-300 rounded-2xl group hover:-translate-y-1.5 active:translate-y-0 ${
-                            darkMode 
-                              ? "text-gray-100 hover:text-red-600 hover:bg-red-300 hover:shadow-[0_8px_25px_-5px_rgba(248,113,113,0.4)]" 
-                              : "text-gray-300 hover:text-red-500 hover:bg-red-50 hover:shadow-[0_8px_25px_-5px_rgba(239,68,68,0.2)]"
-                          }`}
-                        >
-                          <Trash2 size={24} className="transition-colors duration-300" />
-                        </button>
-                      </div>
+                      {role !== 'admin' && (
+                        <div className="flex items-center">
+                          <button 
+                            onClick={() => confirmDelete(alert)} 
+                            className={`p-4 transition-all duration-300 rounded-2xl group hover:-translate-y-1.5 active:translate-y-0 ${
+                              darkMode 
+                                ? "text-gray-100 hover:text-red-600 hover:bg-red-300 hover:shadow-[0_8px_25px_-5px_rgba(248,113,113,0.4)]" 
+                                : "text-gray-300 hover:text-red-500 hover:bg-red-50 hover:shadow-[0_8px_25px_-5px_rgba(239,68,68,0.2)]"
+                            }`}
+                          >
+                            <Trash2 size={24} className="transition-colors duration-300" />
+                          </button>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
