@@ -69,12 +69,12 @@ const AlertItem = ({ alert, onClick, darkMode }) => {
 // 1. PURE LIVE CAMERA FEED
 const CameraFeed = ({ cameraNames, serverUrl, darkMode }) => {
   return (
-    <div className={`lg:col-span-2 border rounded-2xl shadow-lg overflow-hidden transition-colors ${darkMode ? "bg-gray-900 border-gray-800" : "bg-white border-gray-100"}`}>
-      <div className={`px-4 py-3 border-b flex items-center justify-between transition-colors ${darkMode ? "bg-gray-800/50 border-gray-800" : "bg-gray-50 border-gray-100"}`}>
+    <div className={`lg:col-span-2 border rounded-2xl shadow-lg overflow-hidden transition-colors ${darkMode ? "bg-gray-950 border-gray-800" : "bg-white border-gray-100"}`}>
+      <div className={`px-4 py-3 border-b flex items-center justify-between transition-colors ${darkMode ? "bg-gray-900 border-gray-800" : "bg-gray-50 border-gray-100"}`}>
         <div className="flex items-center gap-2">
-          <span className="flex items-center gap-1.5 px-3 py-1 bg-red-500 text-white rounded-lg text-xs font-bold shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-            LIVE FEED
+          <span className={`flex items-center gap-1.5 px-3 py-1 ${cameraNames.length > 0 ? "bg-emerald-500" : "bg-red-500"} text-white rounded-lg text-xs font-bold shadow-sm transition-colors duration-500`}>
+            <span className={`w-1.5 h-1.5 rounded-full bg-white ${cameraNames.length > 0 ? "animate-pulse" : ""}`}></span>
+            {cameraNames.length > 0 ? "LIVE FEED" : "OFFLINE"}
           </span>
         </div>
         {cameraNames.length > 0 && (
