@@ -92,6 +92,8 @@ const SystemUsers = () => {
       toast.success("Verification code sent!");
       setCodeSent(true);
       setCodeExpiry(30);
+      setOtp(Array(6).fill("")); // Clear old boxes
+      setCode("");               // Clear old joined code
     } else {
       toast.error("Failed to send code.");
     }
