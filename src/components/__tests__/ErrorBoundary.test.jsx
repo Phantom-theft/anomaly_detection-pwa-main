@@ -142,7 +142,7 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       );
 
-      const resetButton = screen.getByRole('button', { name: /reset/i });
+      const resetButton = screen.getByRole('button', { name: /go home/i });
       resetButton.click();
 
       expect(onReset).toHaveBeenCalled();
@@ -165,7 +165,7 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       );
 
-      expect(screen.getByRole('button', { name: /reset/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /go home/i })).toBeInTheDocument();
     });
   });
 
@@ -194,7 +194,7 @@ describe('ErrorBoundary', () => {
 
 describe('withErrorBoundary HOC', () => {
   it('wraps component with ErrorBoundary', () => {
-    const WrappedComponent = () => <div>Wrapped</div>;
+    const WrappedComponent = ({ children }) => <div>Wrapped {children}</div>;
     const EnhancedComponent = withErrorBoundary(WrappedComponent);
 
     render(
