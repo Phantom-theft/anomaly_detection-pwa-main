@@ -53,13 +53,14 @@ const SystemUsers = () => {
   const [codeExpiry, setCodeExpiry] = useState(0);
 
   useEffect(() => {
-    if (codeExpiry <= 0) {
-        setCodeSent(false);
-        return;
+    if (codeExpiry > 0) {
+      const timer = setInterval(() => setCodeExpiry(prev => prev - 1), 1000);
+      return () => clearInterval(timer);
+    } else if (codeSent) {
+      // Hides the OTP boxes ONLY when it truly hits 0
+      setCodeSent(false);
     }
-    const timer = setInterval(() => setCodeExpiry(prev => prev - 1), 1000);
-    return () => clearInterval(timer);
-  }, [codeExpiry]);
+  }, [codeExpiry, codeSent]);
 
   const handleSendCode = async () => {
     if (!formData.email) return toast.warning("Enter email first.");
