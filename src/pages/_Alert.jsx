@@ -8,6 +8,8 @@ import useAuth from "../hooks/useAuth";
 import ConfirmModal from "../components/ConfirmModal";
 import { useSelector } from "react-redux";
 import { selectTheme } from "../store/slices/uiSlice";
+import { AlertCardSkeleton } from "../components/LoadingSpinner";
+import AlertSliderModal from "../components/AlertSliderModal";
 
 const rawApiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
 let cleanUrl = rawApiUrl.replace(/\/+$/, "");
@@ -39,6 +41,15 @@ const AlertLogsPage = () => {
   const [alertToDelete, setAlertToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  // --- SLIDER MODAL STATE ---
+  const [isSliderOpen, setIsSliderOpen] = useState(false);
+  const [selectedAlertForSlider, setSelectedAlertForSlider] = useState(null);
+
+  const openSlider = (alert) => {
+    setSelectedAlertForSlider(alert);
+    setIsSliderOpen(true);
+  };
 
   const alertRefs = useRef({});
 
@@ -283,10 +294,16 @@ const AlertLogsPage = () => {
                       
                       <div className="w-full md:w-96">
                         {alert.video ? (
-                          <div className={`relative group overflow-hidden rounded-[1.5rem] shadow-xl border-4 ${darkMode ? "border-gray-700" : "border-white"}`}>
-                            <video src={alert.video} controls className="w-full aspect-video object-cover bg-black">
-                                <track kind="captions" />
-                            </video>
+                          <div 
+                            onClick={() => openSlider(alert)}
+                            className={`relative group overflow-hidden rounded-[1.5rem] shadow-xl border-4 cursor-zoom-in transition-transform hover:scale-[1.02] ${darkMode ? "border-gray-700" : "border-white"}`}
+                          >
+                            <video src={alert.video} className="w-full aspect-video object-cover bg-black pointer-events-none" />
+                            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <span className="bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest border border-white/30">
+                                Click to Expand
+                              </span>
+                            </div>
                           </div>
                         ) : (
                           <div className={`aspect-video rounded-[1.5rem] flex flex-col items-center justify-center border-2 border-dashed ${darkMode ? "bg-gray-900 border-gray-700 text-gray-600" : "bg-gray-100 border-gray-200 text-gray-300"}`}>
@@ -322,6 +339,14 @@ const AlertLogsPage = () => {
         isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} onConfirm={handleDelete}
         title="Move to Recycle Bin?" message="This alert will be hidden and moved to the Recycle Bin in Settings."
         loading={isDeleting} confirmText="Move to Bin" type="danger"
+      />
+
+      <AlertSliderModal 
+        isOpen={isSliderOpen}
+        onClose={() => setIsSliderOpen(false)}
+        activeAlert={selectedAlertForSlider}
+        alerts={alerts}
+        darkMode={darkMode}
       />
     </div>
   );
