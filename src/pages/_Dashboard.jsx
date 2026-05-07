@@ -7,7 +7,7 @@ import useAuth from "../hooks/useAuth";
 import { useRealTimeDashboard } from "../hooks/useRealTimeAlerts";
 import { useSelector } from "react-redux";
 import { selectTheme } from "../store/slices/uiSlice";
-import { Trash2, Info } from "lucide-react"; // 🚨 DAGDAG: Info Icon
+import { Trash2, Info, VideoOff } from "lucide-react"; // 🚨 DAGDAG: Info Icon
 import { toast } from "react-toastify";
 import ConfirmModal from "../components/ConfirmModal"; // 🚨 DAGDAG: ConfirmModal import
 
@@ -97,8 +97,9 @@ const CameraFeed = ({ cameraNames, serverUrl, darkMode }) => {
             ))}
           </div>
         ) : (
-          <div className="w-full aspect-video flex justify-center items-center">
-            <p className="text-white italic text-sm animate-pulse">Waiting for camera streams...</p>
+          <div className="w-full aspect-video flex flex-col justify-center items-center gap-3">
+            <VideoOff size={48} className="text-gray-700 animate-pulse" />
+            <p className="text-gray-500 italic text-sm font-medium animate-pulse">Waiting for camera streams...</p>
           </div>
         )}
       </div>
