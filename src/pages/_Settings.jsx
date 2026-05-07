@@ -28,8 +28,26 @@ import {
 import {
   Moon, Sun, Shield, User, Lock, Trash2, LogOut,
   ChevronRight, X, BookOpen, Bell, AlertTriangle, Undo, Video, CloudOff, FolderArchive,
-  Eye, EyeOff
+  Eye, EyeOff, CheckCheck
 } from "lucide-react";
+
+// --- PASSWORD POLICY DESIGN CONSTANTS ---
+const PASSWORD_REQUIREMENTS = [
+  { regex: /.{8,}/, text: 'At least 8 characters' },
+  { regex: /[0-9]/, text: 'At least 1 number' },
+  { regex: /[a-z]/, text: 'At least 1 lowercase letter' },
+  { regex: /[A-Z]/, text: 'At least 1 uppercase letter' },
+  { regex: /[!-/:-@[-`{-~]/, text: 'At least 1 special character' },
+];
+
+const STRENGTH_TEXTS = {
+  0: 'Enter a password',
+  1: 'Weak password',
+  2: 'Medium password!',
+  3: 'Strong password!!',
+  4: 'Very Strong password!!!',
+  5: 'Perfect password!!!!',
+};
 import { app } from "../firebase/config";
 import useAuth from "../hooks/useAuth";
 import useRealTimeAlerts from "../hooks/useRealTimeAlerts";
@@ -56,6 +74,18 @@ const ChangePasswordModal = ({ isOpen, onClose, darkMode }) => {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew]         = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  const calculateStrength = React.useMemo(() => {
+    const requirements = PASSWORD_REQUIREMENTS.map((req) => ({
+      met: req.regex.test(newPw),
+      text: req.text,
+    }));
+
+    return {
+      score: requirements.filter((req) => req.met).length,
+      requirements,
+    };
+  }, [newPw]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -86,9 +116,9 @@ const ChangePasswordModal = ({ isOpen, onClose, darkMode }) => {
         <form onSubmit={handleSubmit} className="p-8 space-y-4">
           {[
             { label: "Current Password",     val: currentPw, set: setCurrentPw, show: showCurrent, setShow: setShowCurrent },
-            { label: "New Password",          val: newPw,     set: setNewPw,     show: showNew,     setShow: setShowNew },
+            { label: "New Password",          val: newPw,     set: setNewPw,     show: showNew,     setShow: setShowNew, isNew: true },
             { label: "Confirm New Password",  val: confirmPw, set: setConfirmPw, show: showConfirm, setShow: setShowConfirm },
-          ].map(({ label, val, set, show, setShow }) => (
+          ].map(({ label, val, set, show, setShow, isNew }) => (
             <div key={label}>
               <label className={`block text-xs font-bold uppercase mb-1 ${darkMode ? "text-gray-500" : "text-gray-400"}`}>{label}</label>
               <div className="relative">
@@ -109,6 +139,47 @@ const ChangePasswordModal = ({ isOpen, onClose, darkMode }) => {
                   {show ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
+
+              {isNew && (
+                <>
+                  {/* STRENGTH BARS */}
+                  <div className='flex gap-1.5 w-full justify-between mt-3'>
+                    {[1, 2, 3, 4, 5].map((level) => (
+                      <span
+                        key={level}
+                        className={`h-1.5 rounded-full w-full transition-colors duration-500 ${
+                          calculateStrength.score >= level 
+                            ? (calculateStrength.score <= 2 ? 'bg-red-400' : calculateStrength.score <= 4 ? 'bg-orange-400' : 'bg-emerald-500') 
+                            : 'bg-gray-100 dark:bg-gray-800'
+                        }`}
+                      ></span>
+                    ))}
+                  </div>
+
+                  <p className='my-2 text-[10px] font-bold uppercase flex justify-between'>
+                    <span className="text-gray-400">Must contain:</span>
+                    <span className={calculateStrength.score >= 4 ? 'text-emerald-500' : 'text-orange-500'}>
+                      {STRENGTH_TEXTS[calculateStrength.score]}
+                    </span>
+                  </p>
+
+                  {/* REQUIREMENTS CHECKLIST */}
+                  <ul className='space-y-1.5 mt-2'>
+                    {calculateStrength.requirements.map((req) => (
+                      <li key={req.text} className='flex items-center space-x-2'>
+                        {req.met ? (
+                          <CheckCheck size={14} className='text-emerald-500' />
+                        ) : (
+                          <X size={14} className='text-gray-300 dark:text-gray-600' />
+                        )}
+                        <span className={`text-[10px] font-bold uppercase ${req.met ? 'text-emerald-600' : 'text-gray-400'}`}>
+                          {req.text}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
             </div>
           ))}
           <button type="submit" disabled={loading}
