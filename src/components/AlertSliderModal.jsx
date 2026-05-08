@@ -69,10 +69,10 @@ const AlertSliderModal = ({ isOpen, onClose, activeAlert, alerts, darkMode }) =>
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-[150] flex items-center justify-center p-0 md:p-4 lg:p-6 overflow-hidden"
       >
-        {/* Immersive Backdrop */}
+        {/* Immersive Backdrop - Glassmorphism effect */}
         <div 
-          className={`absolute inset-0 backdrop-blur-2xl cursor-zoom-out ${
-            darkMode ? "bg-black/95" : "bg-neutral-200/90"
+          className={`absolute inset-0 backdrop-blur-3xl cursor-zoom-out transition-all duration-700 ${
+            darkMode ? "bg-black/60" : "bg-white/40"
           }`}
           onClick={onClose}
         />
