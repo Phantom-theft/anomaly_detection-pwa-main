@@ -201,15 +201,21 @@ const AlertSliderModal = ({ isOpen, onClose, activeAlert, alerts, darkMode }) =>
                     <motion.div
                       key={alert.id}
                       whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       className={`relative flex-shrink-0 w-32 md:w-full aspect-video rounded-xl md:rounded-2xl overflow-hidden cursor-pointer border-2 md:border-4 transition-all ${
                         selectedAlert?.id === alert.id 
-                          ? "border-violet-500 scale-95 shadow-xl" 
+                          ? "border-violet-500 scale-95 shadow-xl opacity-100" 
                           : "border-transparent opacity-40 hover:opacity-100"
                       }`}
                       onClick={() => setSelectedAlert(alert)}
                     >
                       {alert.video ? (
-                        <video src={alert.video} className="w-full h-full object-cover pointer-events-none">
+                        <video 
+                          src={alert.video} 
+                          preload="metadata"
+                          muted
+                          className="w-full h-full object-cover pointer-events-none"
+                        >
                           <track kind="captions" />
                         </video>
                       ) : (
