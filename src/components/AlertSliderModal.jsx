@@ -3,28 +3,48 @@ import { X, Video, Clock, ShieldAlert, Maximize2, Minimize2 } from 'lucide-react
 import { AnimatePresence, motion } from 'framer-motion';
 
 /**
- * AlertSliderModal - Enhanced for a larger, fuller video experience.
+ * AlertSliderModal - Refined responsive scrolling (Vertical on Desktop, Horizontal on Mobile).
  */
 const AlertSliderModal = ({ isOpen, onClose, activeAlert, alerts, darkMode }) => {
   const [selectedAlert, setSelectedAlert] = useState(activeAlert);
   const [isTheaterMode, setIsTheaterMode] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [constraints, setConstraints] = useState(0);
   const carousel = useRef(null);
 
-  // Update selection when a new alert is clicked from the main list
+  // Sync selection when a new alert is clicked from the main list
   useEffect(() => {
     if (activeAlert) setSelectedAlert(activeAlert);
   }, [activeAlert]);
 
-  // Handle vertical drag constraints
+  // Reactive window resize listener
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Handle drag constraints based on orientation
   useEffect(() => {
     if (isOpen && carousel.current) {
       const element = carousel.current;
-      const viewportHeight = element.offsetHeight;
-      const viewScrollHeight = element.scrollHeight;
-      setConstraints(viewportHeight - viewScrollHeight);
+      // Small delay to ensure layout has settled
+      const timer = setTimeout(() => {
+        if (isMobile) {
+          const viewportWidth = element.offsetWidth;
+          const viewScrollWidth = element.scrollWidth;
+          setConstraints(viewportWidth - viewScrollWidth);
+        } else {
+          const viewportHeight = element.offsetHeight;
+          const viewScrollHeight = element.scrollHeight;
+          setConstraints(viewportHeight - viewScrollHeight);
+        }
+      }, 150);
+      return () => clearTimeout(timer);
     }
-  }, [isOpen, selectedAlert, isTheaterMode]);
+  }, [isOpen, selectedAlert, isTheaterMode, isMobile, alerts]);
 
   // Escape key support
   useEffect(() => {
@@ -38,13 +58,16 @@ const AlertSliderModal = ({ isOpen, onClose, activeAlert, alerts, darkMode }) =>
 
   if (!isOpen) return null;
 
+  // On Mobile, we keep the playlist even in Theater Mode. On Desktop, we hide it for "Full" width.
+  const showSidebar = !isTheaterMode || isMobile;
+
   return (
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[150] flex items-center justify-center p-2 md:p-6 overflow-hidden"
+        className="fixed inset-0 z-[150] flex items-center justify-center p-0 md:p-4 lg:p-6 overflow-hidden"
       >
         {/* Immersive Backdrop */}
         <div 
@@ -55,40 +78,41 @@ const AlertSliderModal = ({ isOpen, onClose, activeAlert, alerts, darkMode }) =>
         />
 
         {/* Top Controls */}
-        <div className="absolute top-6 right-6 flex items-center gap-3 z-[165]">
+        <div className="absolute top-4 right-4 md:top-6 md:right-6 flex items-center gap-2 md:gap-3 z-[165]">
           <button
             title={isTheaterMode ? "Exit Theater Mode" : "Theater Mode"}
-            className={`p-3 rounded-2xl border transition-all hover:scale-110 active:scale-95 shadow-xl ${
+            className={`p-2.5 md:p-3 rounded-xl md:rounded-2xl border transition-all hover:scale-110 active:scale-95 shadow-xl ${
               darkMode ? "bg-gray-900/80 border-gray-700 text-white hover:bg-violet-600" : "bg-white/80 border-gray-200 text-gray-800 hover:bg-violet-100"
             }`}
             onClick={() => setIsTheaterMode(!isTheaterMode)}
           >
-            {isTheaterMode ? <Minimize2 size={24} /> : <Maximize2 size={24} />}
+            {isTheaterMode ? <Minimize2 size={20} className="md:w-6 md:h-6" /> : <Maximize2 size={20} className="md:w-6 md:h-6" />}
           </button>
           <button
-            className={`p-3 rounded-2xl border transition-all hover:scale-110 active:scale-95 shadow-xl ${
+            title="Close"
+            className={`p-2.5 md:p-3 rounded-xl md:rounded-2xl border transition-all hover:scale-110 active:scale-95 shadow-xl ${
               darkMode ? "bg-gray-900/80 border-gray-700 text-white hover:bg-red-600" : "bg-white/80 border-gray-200 text-gray-800 hover:bg-red-100"
             }`}
             onClick={onClose}
           >
-            <X size={24} />
+            <X size={20} className="md:w-6 md:h-6" />
           </button>
         </div>
 
         {/* Main Modal Layout */}
         <motion.div
           layout
-          className={`relative w-full transition-all duration-500 ease-in-out flex flex-col md:flex-row gap-6 items-center justify-center z-[155] ${
-            isTheaterMode ? "max-w-full h-[95vh] px-4" : "max-w-7xl h-[88vh]"
+          className={`relative w-full transition-all duration-500 ease-in-out flex flex-col md:flex-row gap-3 md:gap-6 items-center justify-center z-[155] ${
+            isTheaterMode ? "max-w-full h-full md:h-[95vh] px-0 md:px-4" : "max-w-7xl h-full md:h-[88vh]"
           }`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Main Video & Details Panel */}
           <motion.div 
             layout
-            className={`flex-1 w-full h-full rounded-[2.5rem] overflow-hidden border shadow-2xl flex flex-col ${
+            className={`flex-1 w-full h-full md:rounded-[2.5rem] overflow-hidden border-x md:border shadow-2xl flex flex-col ${
               darkMode ? "bg-gray-900/80 border-gray-800" : "bg-white/80 border-gray-100"
-            } ${isTheaterMode ? "border-violet-500/30" : ""}`}
+            } ${isTheaterMode ? "md:border-violet-500/30 border-none" : ""}`}
           >
             {/* Immersive Video Player */}
             <div className="flex-1 bg-black relative flex items-center justify-center min-h-0">
@@ -112,44 +136,45 @@ const AlertSliderModal = ({ isOpen, onClose, activeAlert, alerts, darkMode }) =>
                     </video>
                   ) : (
                     <div className="flex flex-col items-center gap-3 text-gray-600">
-                      <Video size={64} className="animate-pulse opacity-20" />
-                      <p className="text-xs font-black uppercase tracking-widest opacity-40">Video Processing...</p>
+                      <Video size={48} className="md:w-16 md:h-16 animate-pulse opacity-20" />
+                      <p className="text-[10px] md:text-xs font-black uppercase tracking-widest opacity-40">Video Processing...</p>
                     </div>
                   )}
                 </motion.div>
               </AnimatePresence>
             </div>
 
-            {/* Bottom Info Section - Hidden in Theater Mode */}
+            {/* Bottom Info Section - Always hidden in Theater Mode */}
             {!isTheaterMode && (
               <motion.div 
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
-                className={`p-8 flex flex-wrap items-center justify-between gap-6 border-t ${
+                exit={{ height: 0, opacity: 0 }}
+                className={`p-4 md:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 md:gap-6 border-t ${
                   darkMode ? "bg-gray-900 border-gray-800" : "bg-white border-gray-100"
                 }`}
               >
-                <div className="flex items-center gap-5">
-                  <div className={`p-4 rounded-3xl ${darkMode ? "bg-violet-900/40 text-violet-400" : "bg-violet-100 text-violet-600"}`}>
-                    <ShieldAlert size={28} />
+                <div className="flex items-center gap-3 md:gap-5">
+                  <div className={`p-3 md:p-4 rounded-2xl md:rounded-3xl ${darkMode ? "bg-violet-900/40 text-violet-400" : "bg-violet-100 text-violet-600"}`}>
+                    <ShieldAlert size={20} className="md:w-7 md:h-7" />
                   </div>
                   <div>
-                    <h3 className={`text-2xl font-black tracking-tight capitalize ${darkMode ? "text-white" : "text-gray-800"}`}>
+                    <h3 className={`text-lg md:text-2xl font-black tracking-tight capitalize ${darkMode ? "text-white" : "text-gray-800"}`}>
                       {selectedAlert?.action}
                     </h3>
-                    <div className="flex items-center gap-2 text-xs text-gray-400 font-bold uppercase tracking-wider">
-                      <Clock size={14} /> {selectedAlert?.formattedTime}
+                    <div className="flex items-center gap-2 text-[10px] md:text-xs text-gray-400 font-bold uppercase tracking-wider">
+                      <Clock size={12} className="md:w-3.5 md:h-3.5" /> {selectedAlert?.formattedTime}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className={`px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest ${
+                <div className="flex flex-wrap items-center gap-2 md:gap-3">
+                  <div className={`px-3 md:px-5 py-1.5 md:py-2.5 rounded-xl md:rounded-2xl text-[9px] md:text-[10px] font-black uppercase tracking-widest ${
                     darkMode ? "bg-gray-800 text-gray-400" : "bg-gray-100 text-gray-500"
                   }`}>
                     DEVICE: {selectedAlert?.camera_name}
                   </div>
-                  <div className={`px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest border ${
+                  <div className={`px-3 md:px-5 py-1.5 md:py-2.5 rounded-xl md:rounded-2xl text-[9px] md:text-[10px] font-black uppercase tracking-widest border ${
                     darkMode ? "border-violet-500/30 text-violet-400" : "border-violet-200 text-violet-600"
                   }`}>
                     CONFIDENCE: {selectedAlert?.accuracy ? Math.round(selectedAlert.accuracy * 100) + "%" : selectedAlert?.confidence}
@@ -159,28 +184,25 @@ const AlertSliderModal = ({ isOpen, onClose, activeAlert, alerts, darkMode }) =>
             )}
           </motion.div>
 
-          {/* Draggable Sidebar Carousel - Hidden in Theater Mode */}
-          {!isTheaterMode && (
+          {/* Playlist Carousel - Native Scrolling with visible scrollbar */}
+          {showSidebar && (
             <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className={`w-full md:w-48 h-32 md:h-full overflow-hidden rounded-[2.5rem] border ${
+              layout
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className={`w-full md:w-48 h-28 md:h-full md:rounded-[2.5rem] border-y md:border custom-scrollbar transition-all ${
                 darkMode ? "bg-gray-900/40 border-gray-800" : "bg-white/40 border-gray-100"
-              }`}
-              ref={carousel}
+              } ${isMobile ? "overflow-x-auto" : "overflow-y-auto"}`}
             >
-              <motion.div
-                drag="y"
-                dragConstraints={{ top: constraints, bottom: 0 }}
-                className="flex flex-row md:flex-col gap-4 p-4 h-fit"
-              >
+              <div className="flex flex-row md:flex-col gap-3 md:gap-4 p-3 md:p-4 h-full md:h-fit min-w-full md:min-h-full">
                 {alerts.map((alert) => (
                   <motion.div
                     key={alert.id}
                     whileHover={{ scale: 1.05 }}
-                    className={`relative flex-shrink-0 w-32 md:w-full aspect-video rounded-2xl overflow-hidden cursor-pointer border-4 transition-all ${
+                    className={`relative flex-shrink-0 w-32 md:w-full aspect-video rounded-xl md:rounded-2xl overflow-hidden cursor-pointer border-2 md:border-4 transition-all ${
                       selectedAlert?.id === alert.id 
-                        ? "border-violet-500 scale-95 shadow-2xl" 
+                        ? "border-violet-500 scale-95 shadow-xl" 
                         : "border-transparent opacity-40 hover:opacity-100"
                     }`}
                     onClick={() => setSelectedAlert(alert)}
@@ -191,12 +213,12 @@ const AlertSliderModal = ({ isOpen, onClose, activeAlert, alerts, darkMode }) =>
                       </video>
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gray-950">
-                        <Video size={20} className="text-gray-800" />
+                        <Video size={16} className="text-gray-800" />
                       </div>
                     )}
                   </motion.div>
                 ))}
-              </motion.div>
+              </div>
             </motion.div>
           )}
         </motion.div>
