@@ -184,40 +184,42 @@ const AlertSliderModal = ({ isOpen, onClose, activeAlert, alerts, darkMode }) =>
             )}
           </motion.div>
 
-          {/* Playlist Carousel - Native Scrolling with visible scrollbar */}
+          {/* Playlist Carousel - Nested structure to contain scrollbar inside rounded corners */}
           {showSidebar && (
             <motion.div 
               layout
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className={`w-full md:w-48 h-28 md:h-full md:rounded-[2.5rem] border-y md:border custom-scrollbar transition-all ${
+              className={`w-full md:w-48 h-28 md:h-full md:rounded-[2.5rem] border-y md:border overflow-hidden transition-all ${
                 darkMode ? "bg-gray-900/40 border-gray-800" : "bg-white/40 border-gray-100"
-              } ${isMobile ? "overflow-x-auto" : "overflow-y-auto"}`}
+              }`}
             >
-              <div className="flex flex-row md:flex-col gap-3 md:gap-4 p-3 md:p-4 h-full md:h-fit min-w-full md:min-h-full">
-                {alerts.map((alert) => (
-                  <motion.div
-                    key={alert.id}
-                    whileHover={{ scale: 1.05 }}
-                    className={`relative flex-shrink-0 w-32 md:w-full aspect-video rounded-xl md:rounded-2xl overflow-hidden cursor-pointer border-2 md:border-4 transition-all ${
-                      selectedAlert?.id === alert.id 
-                        ? "border-violet-500 scale-95 shadow-xl" 
-                        : "border-transparent opacity-40 hover:opacity-100"
-                    }`}
-                    onClick={() => setSelectedAlert(alert)}
-                  >
-                    {alert.video ? (
-                      <video src={alert.video} className="w-full h-full object-cover pointer-events-none">
-                        <track kind="captions" />
-                      </video>
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-950">
-                        <Video size={16} className="text-gray-800" />
-                      </div>
-                    )}
-                  </motion.div>
-                ))}
+              <div className={`w-full h-full custom-scrollbar ${isMobile ? "overflow-x-auto overflow-y-hidden" : "overflow-y-auto overflow-x-hidden"}`}>
+                <div className="flex flex-row md:flex-col gap-3 md:gap-4 p-3 md:p-4 h-full md:h-fit min-w-full md:min-h-full">
+                  {alerts.map((alert) => (
+                    <motion.div
+                      key={alert.id}
+                      whileHover={{ scale: 1.05 }}
+                      className={`relative flex-shrink-0 w-32 md:w-full aspect-video rounded-xl md:rounded-2xl overflow-hidden cursor-pointer border-2 md:border-4 transition-all ${
+                        selectedAlert?.id === alert.id 
+                          ? "border-violet-500 scale-95 shadow-xl" 
+                          : "border-transparent opacity-40 hover:opacity-100"
+                      }`}
+                      onClick={() => setSelectedAlert(alert)}
+                    >
+                      {alert.video ? (
+                        <video src={alert.video} className="w-full h-full object-cover pointer-events-none">
+                          <track kind="captions" />
+                        </video>
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gray-950">
+                          <Video size={16} className="text-gray-800" />
+                        </div>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
               </div>
             </motion.div>
           )}
