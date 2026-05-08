@@ -71,8 +71,8 @@ const AlertSliderModal = ({ isOpen, onClose, activeAlert, alerts, darkMode }) =>
       >
         {/* Immersive Backdrop - Glassmorphism effect */}
         <div 
-          className={`absolute inset-0 backdrop-blur-3xl cursor-zoom-out transition-all duration-700 ${
-            darkMode ? "bg-black/60" : "bg-white/40"
+          className={`absolute inset-0 backdrop-blur-md cursor-zoom-out transition-all duration-700 ${
+            darkMode ? "bg-black/30" : "bg-white/20"
           }`}
           onClick={onClose}
         />
@@ -81,8 +81,8 @@ const AlertSliderModal = ({ isOpen, onClose, activeAlert, alerts, darkMode }) =>
         <div className="absolute top-4 right-4 md:top-6 md:right-6 flex items-center gap-2 md:gap-3 z-[165]">
           <button
             title={isTheaterMode ? "Exit Theater Mode" : "Theater Mode"}
-            className={`p-2.5 md:p-3 rounded-xl md:rounded-2xl border transition-all hover:scale-110 active:scale-95 shadow-xl ${
-              darkMode ? "bg-gray-900/80 border-gray-700 text-white hover:bg-violet-600" : "bg-white/80 border-gray-200 text-gray-800 hover:bg-violet-100"
+            className={`p-2.5 md:p-3 rounded-xl md:rounded-2xl border transition-all hover:scale-110 active:scale-95 shadow-xl backdrop-blur-xl ${
+              darkMode ? "bg-gray-900/40 border-gray-700 text-white hover:bg-violet-600" : "bg-white/40 border-gray-200 text-gray-800 hover:bg-violet-100"
             }`}
             onClick={() => setIsTheaterMode(!isTheaterMode)}
           >
@@ -90,8 +90,8 @@ const AlertSliderModal = ({ isOpen, onClose, activeAlert, alerts, darkMode }) =>
           </button>
           <button
             title="Close"
-            className={`p-2.5 md:p-3 rounded-xl md:rounded-2xl border transition-all hover:scale-110 active:scale-95 shadow-xl ${
-              darkMode ? "bg-gray-900/80 border-gray-700 text-white hover:bg-red-600" : "bg-white/80 border-gray-200 text-gray-800 hover:bg-red-100"
+            className={`p-2.5 md:p-3 rounded-xl md:rounded-2xl border transition-all hover:scale-110 active:scale-95 shadow-xl backdrop-blur-xl ${
+              darkMode ? "bg-gray-900/40 border-gray-700 text-white hover:bg-red-600" : "bg-white/40 border-gray-200 text-gray-800 hover:bg-red-100"
             }`}
             onClick={onClose}
           >
@@ -110,12 +110,12 @@ const AlertSliderModal = ({ isOpen, onClose, activeAlert, alerts, darkMode }) =>
           {/* Main Video & Details Panel */}
           <motion.div 
             layout
-            className={`flex-1 w-full h-full md:rounded-[2.5rem] overflow-hidden border-x md:border shadow-2xl flex flex-col ${
-              darkMode ? "bg-gray-900/80 border-gray-800" : "bg-white/80 border-gray-100"
+            className={`flex-1 w-full h-full md:rounded-[2.5rem] overflow-hidden border-x md:border shadow-2xl flex flex-col backdrop-blur-xl ${
+              darkMode ? "bg-gray-900/40 border-gray-800" : "bg-white/40 border-gray-100"
             } ${isTheaterMode ? "md:border-violet-500/30 border-none" : ""}`}
           >
             {/* Immersive Video Player */}
-            <div className="flex-1 bg-black relative flex items-center justify-center min-h-0">
+            <div className="flex-1 bg-black/40 relative flex items-center justify-center min-h-0">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={selectedAlert?.id}
@@ -191,7 +191,7 @@ const AlertSliderModal = ({ isOpen, onClose, activeAlert, alerts, darkMode }) =>
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className={`w-full md:w-48 h-28 md:h-full md:rounded-[2.5rem] border-y md:border overflow-hidden transition-all ${
+              className={`w-full md:w-48 h-28 md:h-full md:rounded-[2.5rem] border-y md:border overflow-hidden transition-all backdrop-blur-xl ${
                 darkMode ? "bg-gray-900/40 border-gray-800" : "bg-white/40 border-gray-100"
               }`}
             >
