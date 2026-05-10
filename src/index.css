@@ -139,16 +139,69 @@ body {
 }
 
 .Toastify__toast {
-  border-radius: 1rem !important;
-  padding: 8px 12px !important;
-  min-height: 44px !important;
+  position: relative !important;
+  border-radius: 0.75rem !important;
+  padding: 6px 32px 6px 12px !important;
+  min-height: 36px !important;
+  max-width: fit-content !important;
   font-family: inherit !important;
   font-weight: 700 !important;
-  font-size: 0.75rem !important;
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
-  border: 1px solid rgba(59, 130, 246, 0.2) !important;
+  font-size: 0.7rem !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   backdrop-filter: blur(8px) !important;
   -webkit-backdrop-filter: blur(8px) !important;
+}
+
+/* 🚨 Absolute Centering for the Close Button */
+.Toastify__close-button {
+  position: absolute !important;
+  right: 8px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  opacity: 0.7 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.Toastify__close-button > svg {
+  width: 12px !important;
+  height: 12px !important;
+}
+
+.Toastify__toast-body {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.Toastify__toast-icon {
+  width: 18px !important;
+  margin-inline-end: 8px !important;
+}
+
+.Toastify__toast-container {
+  width: auto !important;
+  max-width: 320px !important;
+  padding: 12px !important;
+}
+
+/* 📱 Mobile Specific Fix */
+@media only screen and (max-width: 480px) {
+  .Toastify__toast-container--bottom-right {
+    bottom: 1em !important;
+    right: 1em !important;
+    left: auto !important;
+    top: auto !important;
+    width: auto !important;
+  }
+  .Toastify__toast {
+    margin-bottom: 0.5rem !important;
+    width: fit-content !important;
+    margin-left: auto !important;
+  }
 }
 
 /* Dark theme specific glass effect */
