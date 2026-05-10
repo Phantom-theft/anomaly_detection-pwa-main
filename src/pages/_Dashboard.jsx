@@ -7,7 +7,7 @@ import useAuth from "../hooks/useAuth";
 import { useRealTimeDashboard } from "../hooks/useRealTimeAlerts";
 import { useSelector } from "react-redux";
 import { selectTheme } from "../store/slices/uiSlice";
-import { Trash2, Info, VideoOff } from "lucide-react"; // 🚨 DAGDAG: Info Icon
+import { Trash2, Info, VideoOff, RefreshCcw } from "lucide-react"; // 🚨 DAGDAG: Info Icon
 import { toast } from "react-toastify";
 import ConfirmModal from "../components/ConfirmModal"; // 🚨 DAGDAG: ConfirmModal import
 
@@ -499,16 +499,32 @@ export default function Dashboard() {
         <h1 className={`text-4xl font-bold flex items-center gap-4 ${darkMode ? "text-white" : "text-gray-800"}`}>
           <IconVideo className="text-violet-500" /> Dashboard
         </h1>
-        <button onClick={handleToggleMute}
-          className={`flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl border transition-all w-auto justify-center ${
-            isMuted
-              ? (darkMode ? "bg-gray-800 text-gray-400 border-gray-700" : "bg-gray-200 text-gray-500 border-gray-300")
-              : "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400 border-violet-200 dark:border-violet-800 shadow-sm ring-2 ring-violet-500/20"}`}>
-          <IconVolume isMuted={isMuted} className="w-5 h-5" />
-          <span className="font-bold text-[10px] sm:text-sm uppercase sm:normal-case tracking-tight sm:tracking-normal leading-tight text-center">
-            {isMuted ? "Muted" : "Alert On"}
-          </span>
-        </button>
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Refresh Button */}
+          <button
+            onClick={handleRefresh}
+            className={`p-2 sm:p-2.5 rounded-xl border transition-all shadow-sm ${
+              darkMode
+                ? "bg-gray-800 text-gray-400 border-gray-700 hover:bg-gray-700"
+                : "bg-white text-gray-500 border-gray-300 hover:bg-gray-50"
+            }`}
+            title="Refresh Dashboard"
+          >
+            <RefreshCcw size={18} className="sm:w-5 sm:h-5" />
+          </button>
+
+          {/* Mute/Alert Button */}
+          <button onClick={handleToggleMute}
+            className={`flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl border transition-all w-auto justify-center ${
+              isMuted
+                ? (darkMode ? "bg-gray-800 text-gray-400 border-gray-700" : "bg-gray-200 text-gray-500 border-gray-300")
+                : "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400 border-violet-200 dark:border-violet-800 shadow-sm ring-2 ring-violet-500/20"}`}>
+            <IconVolume isMuted={isMuted} className="w-5 h-5" />
+            <span className="font-bold text-[10px] sm:text-sm uppercase sm:normal-case tracking-tight sm:tracking-normal leading-tight text-center">
+              {isMuted ? "Muted" : "Alert On"}
+            </span>
+          </button>
+        </div>
 
       </div>
 
