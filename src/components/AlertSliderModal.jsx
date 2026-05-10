@@ -34,7 +34,9 @@ const PlaylistItem = React.memo(({ alert, isSelected, onClick, darkMode }) => {
       onClick={() => onClick(alert)}
     >
       {alert.video && isInView ? (
-        <video src={alert.video} preload="metadata" muted className="w-full h-full object-cover pointer-events-none" />
+        <video src={alert.video} preload="metadata" muted className="w-full h-full object-cover pointer-events-none">
+          <track kind="captions" />
+        </video>
       ) : (
         <div className="w-full h-full flex items-center justify-center">
           <Video size={16} className={darkMode ? "text-gray-800" : "text-gray-300"} />
@@ -140,7 +142,15 @@ const AlertSliderModal = ({ isOpen, onClose, activeAlert, alerts, darkMode }) =>
                     className="w-full h-full flex items-center justify-center"
                   >
                     {selectedAlert?.video ? (
-                      <video src={selectedAlert.video} controls autoPlay className="w-full h-full object-contain" />
+                      <video 
+                        src={selectedAlert.video} 
+                        controls 
+                        autoPlay 
+                        muted 
+                        className="w-full h-full object-contain"
+                      >
+                        <track kind="captions" />
+                      </video>
                     ) : (
                       <div className="flex flex-col items-center gap-3 text-gray-600">
                         <Video size={48} className="md:w-16 md:h-16 opacity-10 animate-pulse" />

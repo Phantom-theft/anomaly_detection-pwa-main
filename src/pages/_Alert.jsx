@@ -298,7 +298,9 @@ const AlertLogsPage = () => {
                             onClick={() => openSlider(alert)}
                             className={`relative group overflow-hidden rounded-[1.5rem] shadow-xl border-4 cursor-zoom-in transition-transform hover:scale-[1.02] ${darkMode ? "border-gray-700" : "border-white"}`}
                           >
-                            <video src={alert.video} className="w-full aspect-video object-cover bg-black pointer-events-none" />
+                            <video src={alert.video} className="w-full aspect-video object-cover bg-black pointer-events-none">
+                              <track kind="captions" />
+                            </video>
                             <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                               <span className="bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest border border-white/30">
                                 Click to Expand
