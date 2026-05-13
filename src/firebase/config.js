@@ -346,7 +346,7 @@ const sendAdminVerificationCode = async (email) => {
     await setDoc(docRef, {
       email,
       codeHash,
-      expiresAt: Date.now() + 30 * 1000, // 30s
+      expiresAt: Date.now() + 120 * 1000, // 120s (2 minutes)
       createdAt: Date.now(),
     });
 

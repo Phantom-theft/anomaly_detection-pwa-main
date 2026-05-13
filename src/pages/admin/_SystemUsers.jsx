@@ -91,7 +91,7 @@ const SystemUsers = () => {
     if (success) {
       toast.success("Verification code sent!");
       setCodeSent(true);
-      setCodeExpiry(30);
+      setCodeExpiry(120);
       setOtp(Array(6).fill("")); // Clear old boxes
       setCode("");               // Clear old joined code
     } else {
@@ -574,6 +574,7 @@ const SystemUsers = () => {
                                         <input
                                             id={`otp-${index}`}
                                             type="text"
+                                            inputMode="numeric"
                                             maxLength={1}
                                             value={otp[index]}
                                             onChange={(e) => handleOtpChange(e.target.value, index)}

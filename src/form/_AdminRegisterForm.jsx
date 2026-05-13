@@ -45,7 +45,7 @@ export default function AdminRegisterForm() {
         if (success) {
             toast.success("Verification code sent to your email!");
             setCodeSent(true);
-            setCodeExpiry(30); 
+            setCodeExpiry(120); 
         } else {
             toast.error("Failed to send verification code. Try again.");
         }
@@ -149,10 +149,15 @@ export default function AdminRegisterForm() {
                                 id="verificationCode"
                                 required
                                 type="text"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
                                 className='w-full border-2 border-gray-100 rounded-xl p-3 mt-1 outline-none focus:ring-2 focus:ring-violet-500'
                                 placeholder='Enter code from email'
                                 value={code}
-                                onChange={(e) => setCode(e.target.value)}
+                                onChange={(e) => {
+                                    const val = e.target.value.replace(/\D/g, '');
+                                    if (val.length <= 6) setCode(val);
+                                }}
                             />
                             {codeExpiry <= 0 && (
                                 <p className="text-sm text-red-500 mt-1">
