@@ -282,6 +282,25 @@ const Organizations = () => {
             }
         } else {
             // -- EDIT LOGIC --
+            // Check if email changed
+            const isEmailChanged = formData.email.trim().toLowerCase() !== (selectedAdmin ? selectedAdmin.email.toLowerCase() : selectedOrg.admin_email?.toLowerCase());
+
+            if (isEmailChanged) {
+                if (!codeSent || codeExpiry <= 0) {
+                    toast.error("Email verification required to change admin email.");
+                    setSubmitting(false);
+                    setIsConfirmSaveOpen(false);
+                    return;
+                }
+                const verified = await verifyAdminCode(formData.email.trim().toLowerCase(), code);
+                if (!verified) {
+                    toast.error("Invalid or expired verification code.");
+                    setSubmitting(false);
+                    setIsConfirmSaveOpen(false);
+                    return;
+                }
+            }
+
             // 1. Update ang Organizations Collection
             await updateDoc(doc(db, "organizations", selectedOrg.id), {
                 org_name: formData.orgName.trim(),
@@ -430,12 +449,26 @@ const Organizations = () => {
 
                     <div>
                         <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Admin Username</label>
-                        <input required type="text" className="w-full border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 text-gray-800 dark:text-white transition-all" value={formData.username} onChange={(e) => setFormData({...formData, username: e.target.value})} />
+                        <input 
+                            required 
+                            type="text" 
+                            autoComplete="off"
+                            className="w-full border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 text-gray-800 dark:text-white transition-all" 
+                            value={formData.username} 
+                            onChange={(e) => setFormData({...formData, username: e.target.value})} 
+                        />
                     </div>
 
                     <div>
                         <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Admin Email Address</label>
-                        <input required type="email" className="w-full border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 text-gray-800 dark:text-white transition-all" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
+                        <input 
+                            required 
+                            type="email" 
+                            autoComplete="off"
+                            className="w-full border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 text-gray-800 dark:text-white transition-all" 
+                            value={formData.email} 
+                            onChange={(e) => setFormData({...formData, email: e.target.value})} 
+                        />
                     </div>
                     
                     {/* ITATAGO NATIN ANG OTP AT PASSWORD KAPAG EDIT MODE NA LANG */}
@@ -447,6 +480,7 @@ const Organizations = () => {
                                     <input 
                                         required 
                                         type={showPassword ? "text" : "password"} 
+                                        autoComplete="new-password"
                                         className="w-full border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 text-gray-800 dark:text-white transition-all pr-12" 
                                         value={formData.password} 
                                         onChange={(e) => setFormData({ ...formData, password: e.target.value })} 
@@ -499,7 +533,14 @@ const Organizations = () => {
                             </div>
 
                             <div>
-                                <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Email Verification</label>
+                                <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">
+                                    Email Verification
+                                    {currentAction === "edit" && (
+                                        <span className="ml-2 text-violet-500 normal-case font-medium">
+                                            (Required only if changing email)
+                                        </span>
+                                    )}
+                                </label>
                                 <div className="flex gap-2 mt-1">
                                     <button type="button" onClick={handleSendCode} disabled={codeLoading || codeExpiry > 0} className="px-4 py-2 rounded-xl bg-violet-500 text-white font-bold disabled:opacity-50">
                                     {codeLoading ? "Sending..." : codeExpiry > 0 ? `Resend in ${codeExpiry}s` : "Send Code"}

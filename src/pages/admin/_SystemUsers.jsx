@@ -249,8 +249,12 @@ const SystemUsers = () => {
         return toast.error("This email is already registered to another user.");
     }
 
-    // verification check for both add and edit
-    if (!codeSent || codeExpiry <= 0) {
+    // CHECK IF VERIFICATION IS REQUIRED
+    const isEmailChanged = currentAction === "edit" && formData.email.trim().toLowerCase() !== selectedUser.email.toLowerCase();
+    const isVerificationRequired = currentAction === "add" || isEmailChanged;
+
+    // verification check only if required
+    if (isVerificationRequired && (!codeSent || codeExpiry <= 0)) {
         return toast.error("Email verification required.");
     }
 
@@ -266,13 +270,18 @@ const SystemUsers = () => {
     let success = false;
 
     try {
-        // Shared Verification Logic for security
-        const verified = await verifyAdminCode(formData.email.trim().toLowerCase(), code);
-        if (!verified) {
-            toast.error("Invalid or expired verification code.");
-            setSubmitting(false);
-            setIsConfirmSaveOpen(false);
-            return;
+        // CHECK IF VERIFICATION IS REQUIRED
+        const isEmailChanged = currentAction === "edit" && formData.email.trim().toLowerCase() !== selectedUser.email.toLowerCase();
+        const isVerificationRequired = currentAction === "add" || isEmailChanged;
+
+        if (isVerificationRequired) {
+            const verified = await verifyAdminCode(formData.email.trim().toLowerCase(), code);
+            if (!verified) {
+                toast.error("Invalid or expired verification code.");
+                setSubmitting(false);
+                setIsConfirmSaveOpen(false);
+                return;
+            }
         }
 
         if (currentAction === "add") {
@@ -440,6 +449,7 @@ const SystemUsers = () => {
                         <input 
                             required 
                             type="text" 
+                            autoComplete="off"
                             className="w-full border-2 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 dark:focus:border-violet-400 transition-all" 
                             value={formData.username} 
                             onChange={(e) => setFormData({...formData, username: e.target.value})} 
@@ -450,6 +460,7 @@ const SystemUsers = () => {
                         <input 
                             required 
                             type="email" 
+                            autoComplete="off"
                             className="w-full border-2 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 dark:focus:border-violet-400 transition-all" 
                             value={formData.email} 
                             onChange={(e) => setFormData({...formData, email: e.target.value})} 
@@ -489,6 +500,7 @@ const SystemUsers = () => {
                             <input
                                 required={currentAction === "add"}
                                 type={showPassword ? "text" : "password"}
+                                autoComplete="new-password"
                                 placeholder={currentAction === "edit" ? "Leave blank to keep current" : ""}
                                 className="w-full border-2 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 p-2 sm:p-3 rounded-xl mt-1 outline-none focus:border-violet-500 dark:focus:border-violet-400 transition-all pr-12"
                                 value={formData.password}
@@ -545,7 +557,14 @@ const SystemUsers = () => {
 
                     {/* SHOW VERIFICATION FOR BOTH ADD AND EDIT */}
                     <div>
-                        <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">Email Verification</label>
+                        <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">
+                            Email Verification 
+                            {currentAction === "edit" && (
+                                <span className="ml-2 text-violet-500 normal-case font-medium">
+                                    (Required only if changing email)
+                                </span>
+                            )}
+                        </label>
                         <div className="flex gap-2 mt-1">
                             <button
                                 type="button"
