@@ -494,38 +494,43 @@ export default function Dashboard() {
   }).length;
 
   return (
-    <div className={`p-6 min-h-screen transition-colors duration-300 ${darkMode ? "bg-gray-950" : "bg-gray-50"}`}>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className={`text-4xl font-bold flex items-center gap-4 ${darkMode ? "text-white" : "text-gray-800"}`}>
-          <IconVideo className="text-violet-500" /> Dashboard
-        </h1>
-        <div className="flex items-center gap-2 sm:gap-3">
+    <div className={`p-4 sm:p-6 min-h-screen transition-colors duration-300 ${darkMode ? "bg-gray-950" : "bg-gray-50"}`}>
+      <div className="flex flex-row items-center justify-between mb-6 lg:mb-10 gap-3">
+        {/* Title Group */}
+        <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+          <IconVideo className="text-violet-500 w-5 h-5 sm:w-8 sm:h-8 lg:w-10 lg:h-10 flex-shrink-0" /> 
+          <h1 className={`text-lg sm:text-3xl lg:text-4xl font-black ${darkMode ? "text-white" : "text-gray-800"} tracking-tight truncate`}>
+            Dashboard
+          </h1>
+        </div>
+        
+        {/* Actions Group */}
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           {/* Refresh Button */}
           <button
             onClick={handleRefresh}
-            className={`p-2 sm:p-2.5 rounded-xl border transition-all shadow-sm ${
+            className={`p-1.5 sm:p-3 rounded-lg sm:rounded-2xl border transition-all shadow-sm active:scale-90 ${
               darkMode
-                ? "bg-gray-800 text-gray-400 border-gray-700 hover:bg-gray-700"
-                : "bg-white text-gray-500 border-gray-300 hover:bg-gray-50"
+                ? "bg-gray-900 text-gray-400 border-gray-800 hover:bg-gray-800 hover:text-white"
+                : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50 hover:text-violet-600"
             }`}
             title="Refresh Dashboard"
           >
-            <RefreshCcw size={18} className="sm:w-5 sm:h-5" />
+            <RefreshCcw size={16} className="sm:w-5 sm:h-5" />
           </button>
 
           {/* Mute/Alert Button */}
           <button onClick={handleToggleMute}
-            className={`flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl border transition-all w-auto justify-center ${
+            className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-5 py-1.5 sm:py-3 rounded-lg sm:rounded-2xl border transition-all shadow-sm active:scale-95 ${
               isMuted
-                ? (darkMode ? "bg-gray-800 text-gray-400 border-gray-700" : "bg-gray-200 text-gray-500 border-gray-300")
-                : "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400 border-violet-200 dark:border-violet-800 shadow-sm ring-2 ring-violet-500/20"}`}>
-            <IconVolume isMuted={isMuted} className="w-5 h-5" />
-            <span className="font-bold text-[10px] sm:text-sm uppercase sm:normal-case tracking-tight sm:tracking-normal leading-tight text-center">
-              {isMuted ? "Muted" : "Alert On"}
+                ? (darkMode ? "bg-gray-900 text-gray-500 border-gray-800" : "bg-gray-100 text-gray-400 border-gray-200")
+                : "bg-violet-600 text-white border-violet-500 shadow-lg shadow-violet-500/20"}`}>
+            <IconVolume isMuted={isMuted} className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="font-black text-[10px] sm:text-xs lg:text-sm uppercase tracking-wider">
+              {isMuted ? "Muted" : "On"}
             </span>
           </button>
         </div>
-
       </div>
 
       {/* TOP SECTION: LIVE CAMERA & ALERTS */}
