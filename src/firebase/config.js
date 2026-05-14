@@ -261,7 +261,18 @@ const getAllUsers = async () => {
 
 const updateUserEntry = async (userId, newData) => {
   try {
+    const auth = getAuth(app);
+    const currentUser = auth.currentUser;
+
+    // Keep your original logic
     await updateDoc(doc(db, "users", userId), newData);
+
+    // Minimal sync: If I'm updating my OWN name, sync it with the Auth profile
+    if (currentUser && currentUser.uid === userId && newData.username) {
+      const { updateProfile } = await import("firebase/auth");
+      await updateProfile(currentUser, { displayName: newData.username });
+    }
+
     toast.success("User updated!");
     return true;
   } catch (error) { return false; }

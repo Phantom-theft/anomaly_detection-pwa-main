@@ -774,14 +774,14 @@ export default function Settings() {
                 darkMode={darkMode}
                 icon={<User size={18} />}
                 title="Username"
-                desc={currentUser?.displayName || "—"}
+                desc={currentUserData?.username || "—"}
                 action={null}
               />
               <SettingRow
                 darkMode={darkMode}
                 icon={<Lock size={18} />}
                 title="Email Address"
-                desc={currentUser?.email || "—"}
+                desc={currentUserData?.email || "—"}
                 action={null}
               />
               <SettingRow
