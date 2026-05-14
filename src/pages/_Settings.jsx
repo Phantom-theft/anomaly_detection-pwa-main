@@ -340,6 +340,8 @@ export default function Settings() {
   const [loadingPrefs, setLoadingPrefs] = useState(true);
   const [isPasswordOpen, setPasswordOpen] = useState(false);
   const [isDeleteOpen, setDeleteOpen]     = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [activeTab, setActiveTab]         = useState("appearance");
 
   // Recycle Bin State
@@ -510,9 +512,18 @@ export default function Settings() {
   };
 
   const handleLogout = async () => {
-    await auth.signOut();
-    toast.success("Logged out successfully.");
-    navigate("/login");
+    setIsLoggingOut(true);
+    try {
+      await auth.signOut();
+      toast.success("Logged out successfully.");
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      toast.error("Failed to sign out.");
+    } finally {
+      setIsLoggingOut(false);
+      setIsLogoutModalOpen(false);
+    }
   };
 
   // ============================================
@@ -799,7 +810,7 @@ export default function Settings() {
             </SectionCard>
 
             <SectionCard title="Danger Zone" icon={<AlertTriangle size={16} />} darkMode={darkMode}>
-              <button onClick={handleLogout}
+              <button onClick={() => setIsLogoutModalOpen(true)}
                 className={`w-full flex items-center justify-between px-6 py-5 transition-colors ${
                     darkMode ? "hover:bg-red-950/10" : "hover:bg-red-50"
                 }`}>
@@ -1107,6 +1118,19 @@ export default function Settings() {
       <ChangePasswordModal isOpen={isPasswordOpen} onClose={() => setPasswordOpen(false)} darkMode={darkMode} />
       <DeleteAccountModal  isOpen={isDeleteOpen}   onClose={() => setDeleteOpen(false)}   darkMode={darkMode} />
       
+      {/* 🚨 SIGN OUT CONFIRMATION MODAL */}
+      <ConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={handleLogout}
+        title="Sign Out?"
+        message="Are you sure you want to log out of your account? You will need to sign in again to access the dashboard."
+        confirmText="Sign Out"
+        loading={isLoggingOut}
+        type="danger"
+        icon={LogOut}
+      />
+
       {/* 🚨 UNIFIED CONFIRMATION MODAL PARA SA RECYCLE BIN ACTIONS */}
       <ConfirmModal
         isOpen={confirmModalState.isOpen}

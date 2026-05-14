@@ -74,9 +74,8 @@ const _LoginForm = () => {
             <ShieldCheck className="w-6 h-6 lg:w-8 lg:h-8 text-white" />
           </div>
           <h1 className='text-2xl lg:text-3xl font-black text-center text-gray-900 dark:text-white tracking-tight'>
-            Secure <span className="text-violet-600">Access</span>
+            Anomaly <span className="text-violet-600">Detection</span> System
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1 lg:mt-2 font-medium text-xs lg:text-sm">Anomaly Detection System</p>
         </div>
 
         <form onSubmit={handleLogin} className='space-y-4 lg:space-y-5'>
