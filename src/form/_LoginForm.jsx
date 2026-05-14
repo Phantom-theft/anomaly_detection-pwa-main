@@ -69,13 +69,27 @@ const _LoginForm = () => {
   return (
       <div className='bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl px-5 py-8 sm:px-10 sm:py-10 lg:py-16 rounded-[2rem] lg:rounded-[2.5rem] border-2 border-violet-500/20 shadow-2xl transition-all duration-300 animate-fade-in-up animate-border-glow'>
 
-        <div className="flex flex-col items-center mb-5 lg:mb-8">
-          <div className="p-3 lg:p-4 bg-violet-600 rounded-2xl shadow-lg shadow-violet-500/20 mb-3 lg:mb-4 transform hover:rotate-6 transition-transform">
-            <ShieldCheck className="w-6 h-6 lg:w-8 lg:h-8 text-white" />
+        <div className="flex flex-col items-center mb-6 lg:mb-10">
+          <div className="relative mb-4 lg:mb-6">
+            {/* Pulsing Glow Background */}
+            <div className="absolute inset-0 bg-violet-500 blur-2xl opacity-20 animate-pulse"></div>
+            
+            {/* Gradient Icon Box */}
+            <div className="relative p-4 lg:p-5 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-2xl lg:rounded-3xl shadow-xl shadow-violet-500/20 transform hover:scale-110 transition-transform duration-500">
+              <ShieldCheck className="w-8 h-8 lg:w-10 lg:h-10 text-white" />
+            </div>
           </div>
-          <h1 className='text-2xl lg:text-3xl font-black text-center text-gray-900 dark:text-white tracking-tight'>
-            Anomaly <span className="text-violet-600">Detection</span> System
-          </h1>
+          
+          <div className="text-center space-y-1">
+            <h1 className='text-2xl lg:text-4xl font-black text-gray-900 dark:text-white tracking-tighter leading-none uppercase'>
+              Anomaly <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-indigo-600">Detection</span>
+            </h1>
+            <div className="flex items-center justify-center gap-2">
+              <div className="h-px w-8 bg-gray-200 dark:bg-gray-800"></div>
+              <span className="text-[10px] lg:text-xs font-black uppercase tracking-[0.3em] text-gray-400 dark:text-gray-500">System</span>
+              <div className="h-px w-8 bg-gray-200 dark:bg-gray-800"></div>
+            </div>
+          </div>
         </div>
 
         <form onSubmit={handleLogin} className='space-y-4 lg:space-y-5'>
