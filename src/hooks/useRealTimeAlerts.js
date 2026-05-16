@@ -22,7 +22,8 @@ const useRealTimeAlerts = (options = {}) => {
     onCameraStatusChange = null,
     onNewDetection = null,
     autoConnect = true,
-    soundUrl = '/alert.mp3'
+    soundUrl = '/alert.mp3',
+    isMuted = false
   } = options;
 
   const [isConnected, setIsConnected] = useState(false);
@@ -191,8 +192,10 @@ const useRealTimeAlerts = (options = {}) => {
         }
 
         if (data?.type !== 'heartbeat') {
-          console.log('[useRealTimeAlerts] Calling playAlertSound and showNotification via refs...');
-          playAlertSoundRef.current?.();
+          console.log('[useRealTimeAlerts] New alert received. isMuted:', isMuted);
+          if (!isMuted) {
+            playAlertSoundRef.current?.();
+          }
           showNotificationRef.current?.(data);
         }
       },
@@ -213,6 +216,10 @@ const useRealTimeAlerts = (options = {}) => {
         );
         if (onNewDetectionRef.current) {
           onNewDetectionRef.current(data, timestamp);
+        }
+
+        if (!isMuted) {
+          playAlertSoundRef.current?.();
         }
       },
       onConnected: (data, timestamp) => {
@@ -296,7 +303,8 @@ export const useRealTimeDashboard = (options = {}) => {
     onNewAlert = null,
     onCameraStatusChange = null,
     onNewDetection = null,
-    soundUrl = '/alert.mp3'
+    soundUrl = '/alert.mp3',
+    isMuted = false
   } = options;
 
   return useRealTimeAlerts({
@@ -306,7 +314,8 @@ export const useRealTimeDashboard = (options = {}) => {
     onNewAlert,
     onCameraStatusChange,
     onNewDetection,
-    soundUrl
+    soundUrl,
+    isMuted
   });
 };
 

@@ -18,9 +18,18 @@ const getInitialSidebarOpen = () => {
   return true;
 };
 
+const getInitialMuteState = () => {
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem("dashboard_muted");
+    return saved !== null ? JSON.parse(saved) : true;
+  }
+  return true;
+};
+
 const initialState = {
   theme: getInitialTheme(),
   sidebarOpen: getInitialSidebarOpen(),
+  isMuted: getInitialMuteState(),
   loading: {
     global: false,
     cameras: false,
@@ -74,6 +83,12 @@ const uiSlice = createSlice({
       state.sidebarOpen = action.payload;
       if (typeof window !== 'undefined') {
         localStorage.setItem('sidebarOpen', action.payload.toString());
+      }
+    },
+    toggleMute: (state) => {
+      state.isMuted = !state.isMuted;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("dashboard_muted", JSON.stringify(state.isMuted));
       }
     },
     
@@ -183,6 +198,7 @@ export const {
   toggleTheme,
   toggleSidebar,
   setSidebarOpen,
+  toggleMute,
   setLoading,
   setGlobalLoading,
   setError,
@@ -202,6 +218,7 @@ export const {
 // Selectors
 export const selectTheme = (state) => state.ui.theme;
 export const selectSidebarOpen = (state) => state.ui.sidebarOpen;
+export const selectIsMuted = (state) => state.ui.isMuted;
 export const selectLoading = (state) => state.ui.loading;
 export const selectGlobalLoading = (state) => state.ui.loading.global;
 export const selectErrors = (state) => state.ui.errors;

@@ -5,8 +5,8 @@ import { collection, query, where, doc, getDoc, onSnapshot, orderBy, limit, getF
 import { app } from "../firebase/config";
 import useAuth from "../hooks/useAuth";
 import { useRealTimeDashboard } from "../hooks/useRealTimeAlerts";
-import { useSelector } from "react-redux";
-import { selectTheme } from "../store/slices/uiSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { selectTheme, selectIsMuted, toggleMute } from "../store/slices/uiSlice";
 import { Trash2, Info, VideoOff, RefreshCcw } from "lucide-react"; // 🚨 DAGDAG: Info Icon
 import { toast } from "react-toastify";
 import ConfirmModal from "../components/ConfirmModal"; // 🚨 DAGDAG: ConfirmModal import
@@ -323,32 +323,20 @@ const RecordingsArchive = ({ serverUrl, orgId, darkMode }) => {
 export default function Dashboard() {
   const theme = useSelector(selectTheme);
   const darkMode = theme === 'dark';
+  const isMuted = useSelector(selectIsMuted);
+  const dispatch = useDispatch();
+
   const { user: currentUser, organization: actualOrgId } = useAuth();
   const navigate = useNavigate();
   const [time, setTime]               = useState(new Date());
-
-  // Persist mute state across page changes
-  const [isMuted, setIsMuted]         = useState(() => {
-    const saved = localStorage.getItem("dashboard_muted");
-    return saved !== null ? JSON.parse(saved) : true;
-  });
 
   const [alerts, setAlerts]           = useState([]);
   const [cameraNames, setCameraNames] = useState([]);
   const [orgSoundUrl, setOrgSoundUrl] = useState("/alert.mp3");
 
-  const isMutedRef                    = useRef(true);
-
   const handleRefresh = () => {
     window.location.reload();
   };
-
-  const playAlertSoundRef = useRef(null);
-
-  // Sync isMutedRef with isMuted state
-  useEffect(() => {
-    isMutedRef.current = isMuted;
-  }, [isMuted]);
 
   // 1. Fetch Organization Sound Configuration
   useEffect(() => {
@@ -372,10 +360,9 @@ export default function Dashboard() {
 
   const { playAlertSound } = useRealTimeDashboard({
     soundUrl: orgSoundUrl,
+    isMuted: true, // Sound is handled globally by MainLayout
     onNewAlert: (eventPayload) => {
-      if (!isMutedRef.current) {
-        playAlertSoundRef.current?.();
-      }
+      // Handled by MainLayout
     },
     onNewDetection: (detectionData) => {
       const placeholder = {
@@ -397,16 +384,9 @@ export default function Dashboard() {
         if (exists) return prev;
         return [placeholder, ...prev].slice(0, 20);
       });
-
-      if (!isMutedRef.current) {
-        playAlertSoundRef.current?.();
-      }
+      // Sound is now handled by MainLayout
     }
   });
-
-  useEffect(() => {
-    playAlertSoundRef.current = playAlertSound;
-  }, [playAlertSound]);
 
   useEffect(() => {
     const t = setInterval(() => setTime(new Date()), 1000);
@@ -471,12 +451,10 @@ export default function Dashboard() {
   }, [actualOrgId]);
 
   const handleToggleMute = () => {
-    const m = !isMuted;
-    setIsMuted(m);
-    isMutedRef.current = m;
-    localStorage.setItem("dashboard_muted", JSON.stringify(m));
+    dispatch(toggleMute());
 
-    if (!m) {
+    // Optional: play a sample sound if unmuting
+    if (isMuted) {
       playAlertSound();
     }
   };
