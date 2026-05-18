@@ -93,7 +93,7 @@ export default function SuperAdminDashboard() {
                 
                 {/* Organization Shortcut */}
                 <StatCard 
-                    label="Active Organizations" 
+                    label="Active Admin" 
                     value={stats.orgs} 
                     icon={<FaBuilding />} 
                     color="bg-blue-100 text-blue-600" 

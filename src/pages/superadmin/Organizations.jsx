@@ -334,7 +334,7 @@ const Organizations = () => {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 gap-4 sm:gap-0">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-1">Organizations Directory</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-1">Admin Directory</h1>
             <p className="text-gray-500 text-sm">SuperAdmin View: Manage households, admins, and their registered users.</p>
           </div>
           <button 
@@ -346,7 +346,7 @@ const Organizations = () => {
         </div>
 
         {loading ? (
-          <div className="text-center p-10 text-gray-400 font-medium">Loading organizations...</div>
+          <div className="text-center p-10 text-gray-400 font-medium">Loading Admin...</div>
         ) : organizations.length === 0 ? (
           <div className="text-center p-10 text-gray-400 font-medium bg-white rounded-3xl border border-dashed border-gray-300">
              No organizations found. Click "Add Organization" to create one.

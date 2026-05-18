@@ -69,7 +69,7 @@ const _CameraAdmin = () => {
             <FaCamera className="text-2xl sm:text-3xl" />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-800 dark:text-white tracking-tight">Organization Camera Directory</h1>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-800 dark:text-white tracking-tight">Camera Directory</h1>
             <p className="text-gray-500 dark:text-gray-400 font-medium mt-1 text-sm sm:text-base leading-tight">
                 View-only access for <span className="text-violet-600 dark:text-violet-400 font-bold break-all">{orgId || "your organization"}</span>.
             </p>
