@@ -22,7 +22,7 @@ const settingsGroups = [
   {
     groupName: "Video Playback Control (Global)",
     items: [
-      { key: "video_fps", label: "Video FPS Limit (Frames/Sec)", desc: "Lower this if YouTube videos play in fast-forward (e.g. 15-20).", min: 5, max: 60, step: 1 }
+      { key: "video_fps", label: "Video FPS Limit (Frames/Sec)", desc: "Lower this if videos play in fast-forward (e.g. 15-20).", min: 5, max: 60, step: 1 }
     ]
   },
   {

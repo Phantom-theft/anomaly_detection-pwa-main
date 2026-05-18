@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { getAuth } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
-import { FaVideo, FaCamera, FaYoutube, FaCircle } from "react-icons/fa6";
+import { FaVideo, FaCamera, FaCircle } from "react-icons/fa6";
 import { app } from "../../firebase/config";
 
 const rawApiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
@@ -107,7 +107,7 @@ const _CameraAdmin = () => {
                     <div className="relative flex-shrink-0">
                         <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center text-lg sm:text-xl shadow-inner
                             ${cam.online ? "bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400" : "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"}`}>
-                            {cam.type === "youtube" ? <FaYoutube /> : <FaCamera />}
+                            <FaCamera />
                         </div>
                         <span className={`absolute -top-1 -right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border-2 border-white dark:border-gray-800 shadow-sm
                             ${cam.online ? "bg-green-500 animate-pulse" : "bg-red-500"}`}></span>
@@ -115,8 +115,7 @@ const _CameraAdmin = () => {
                     <div className="min-w-0 flex-1">
                       <p className="font-extrabold text-gray-800 dark:text-gray-200 uppercase tracking-wider text-xs sm:text-sm truncate">{cam.name}</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className={`text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-md font-black uppercase flex-shrink-0
-                            ${cam.type === "youtube" ? "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400" : "bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400"}`}>
+                        <span className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-md font-black uppercase flex-shrink-0 bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400">
                             {cam.type}
                         </span>
                         <p className="text-[10px] sm:text-[11px] text-gray-400 dark:text-gray-500 font-mono font-bold truncate" title={cam.src}>{cam.src}</p>
